@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Office Whisperer - MCP Server v3.0
- * 63 Professional Tools for Microsoft Office Suite Automation
+ * Office Whisperer - MCP Server v4.0
+ * 143 Professional Tools for Microsoft Office Suite Automation
  * Control Excel, Word, PowerPoint, and Outlook through natural language with Claude Desktop
  */
 import { ExcelGenerator } from './generators/excel-generator.js';
@@ -327,6 +327,268 @@ class OfficeWhispererServer {
                 required: ['filename', 'sheetName', 'tableName', 'slicers'],
             },
         },
+        {
+            name: 'excel_power_query',
+            description: '📊 Power Query transformations (filter, sort, merge, pivot)',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    sheetName: { type: 'string' },
+                    queryName: { type: 'string' },
+                    source: { type: 'object' },
+                    transformations: { type: 'array' },
+                    loadTo: { type: 'string' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'sheetName', 'queryName', 'source'],
+            },
+        },
+        {
+            name: 'excel_goal_seek',
+            description: '🎯 Goal Seek what-if analysis to find input value',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    sheetName: { type: 'string' },
+                    setCell: { type: 'string' },
+                    toValue: { type: 'number' },
+                    byChangingCell: { type: 'string' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'sheetName', 'setCell', 'toValue', 'byChangingCell'],
+            },
+        },
+        {
+            name: 'excel_data_table',
+            description: '📊 Create one/two variable data tables for scenarios',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    sheetName: { type: 'string' },
+                    type: { type: 'string', enum: ['oneVariable', 'twoVariable'] },
+                    formulaCell: { type: 'string' },
+                    rowInputCell: { type: 'string' },
+                    columnInputCell: { type: 'string' },
+                    outputRange: { type: 'string' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'sheetName', 'type', 'formulaCell', 'outputRange'],
+            },
+        },
+        {
+            name: 'excel_scenario_manager',
+            description: '📈 Scenario Manager with multiple what-if scenarios',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    sheetName: { type: 'string' },
+                    scenarios: { type: 'array' },
+                    resultCells: { type: 'array' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'sheetName', 'scenarios'],
+            },
+        },
+        {
+            name: 'excel_create_table',
+            description: '📊 Create Excel Tables with styles and features',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    sheetName: { type: 'string' },
+                    tableName: { type: 'string' },
+                    range: { type: 'string' },
+                    hasHeaders: { type: 'boolean' },
+                    style: { type: 'string' },
+                    showTotalRow: { type: 'boolean' },
+                    showFilterButton: { type: 'boolean' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'sheetName', 'tableName', 'range'],
+            },
+        },
+        {
+            name: 'excel_table_formula',
+            description: '📊 Add table structured reference formulas',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    sheetName: { type: 'string' },
+                    tableName: { type: 'string' },
+                    columnName: { type: 'string' },
+                    formula: { type: 'string' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'sheetName', 'tableName', 'columnName', 'formula'],
+            },
+        },
+        {
+            name: 'excel_form_controls',
+            description: '📊 Add form controls (button, checkbox, dropdown, spinner)',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    sheetName: { type: 'string' },
+                    controls: { type: 'array' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'sheetName', 'controls'],
+            },
+        },
+        {
+            name: 'excel_insert_images',
+            description: '📊 Insert and position images in worksheets',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    sheetName: { type: 'string' },
+                    images: { type: 'array' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'sheetName', 'images'],
+            },
+        },
+        {
+            name: 'excel_insert_shapes',
+            description: '📊 Insert shapes and connectors',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    sheetName: { type: 'string' },
+                    shapes: { type: 'array' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'sheetName', 'shapes'],
+            },
+        },
+        {
+            name: 'excel_smart_art',
+            description: '📊 Insert SmartArt graphics (list, process, hierarchy)',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    sheetName: { type: 'string' },
+                    smartArt: { type: 'object' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'sheetName', 'smartArt'],
+            },
+        },
+        {
+            name: 'excel_page_setup',
+            description: '📊 Page setup (orientation, margins, print area)',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    sheetName: { type: 'string' },
+                    pageSetup: { type: 'object' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'sheetName', 'pageSetup'],
+            },
+        },
+        {
+            name: 'excel_header_footer',
+            description: '📊 Headers and footers with special codes',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    sheetName: { type: 'string' },
+                    header: { type: 'object' },
+                    footer: { type: 'object' },
+                    differentFirstPage: { type: 'boolean' },
+                    differentOddEven: { type: 'boolean' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'sheetName'],
+            },
+        },
+        {
+            name: 'excel_page_breaks',
+            description: '📊 Configure page breaks for printing',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    sheetName: { type: 'string' },
+                    horizontalBreaks: { type: 'array' },
+                    verticalBreaks: { type: 'array' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'sheetName'],
+            },
+        },
+        {
+            name: 'excel_track_changes',
+            description: '📊 Track changes and highlight modifications',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    enable: { type: 'boolean' },
+                    highlightChanges: { type: 'boolean' },
+                    listChangesOnNewSheet: { type: 'boolean' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'enable'],
+            },
+        },
+        {
+            name: 'excel_share_workbook',
+            description: '📊 Configure workbook sharing settings',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    share: { type: 'boolean' },
+                    allowChanges: { type: 'boolean' },
+                    protectSharing: { type: 'boolean' },
+                    password: { type: 'string' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'share'],
+            },
+        },
+        {
+            name: 'excel_compare_versions',
+            description: '📊 Compare two Excel files and highlight differences',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    originalFile: { type: 'string' },
+                    revisedFile: { type: 'string' },
+                    outputPath: { type: 'string' },
+                    highlightDifferences: { type: 'boolean' },
+                },
+                required: ['originalFile', 'revisedFile'],
+            },
+        },
+        {
+            name: 'excel_add_comments',
+            description: '📊 Add cell comments with author information',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    sheetName: { type: 'string' },
+                    comments: { type: 'array' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'sheetName', 'comments'],
+            },
+        },
         // ========== WORD TOOLS (16 tools) ==========
         {
             name: 'create_word',
@@ -555,6 +817,269 @@ class OfficeWhispererServer {
                 required: ['filename', 'references'],
             },
         },
+        {
+            name: 'word_bibliography',
+            description: '📄 Create bibliography (APA, MLA, Chicago, Harvard, IEEE)',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    sources: { type: 'array' },
+                    style: { type: 'string', enum: ['APA', 'MLA', 'Chicago', 'Harvard', 'IEEE'] },
+                    insertAt: { type: 'string' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'sources'],
+            },
+        },
+        {
+            name: 'word_citations',
+            description: '📄 Insert citations with page numbers',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    citations: { type: 'array' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'citations'],
+            },
+        },
+        {
+            name: 'word_index',
+            description: '📄 Generate index with entries and subentries',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    entries: { type: 'array' },
+                    title: { type: 'string' },
+                    columns: { type: 'number' },
+                    insertAt: { type: 'string' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'entries'],
+            },
+        },
+        {
+            name: 'word_mark_index_entry',
+            description: '📄 Mark text for index inclusion',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    textToMark: { type: 'string' },
+                    entryText: { type: 'string' },
+                    crossReference: { type: 'string' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'textToMark'],
+            },
+        },
+        {
+            name: 'word_form_fields',
+            description: '📄 Add form fields (text, checkbox, dropdown, date)',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    fields: { type: 'array' },
+                    protectForm: { type: 'boolean' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'fields'],
+            },
+        },
+        {
+            name: 'word_content_controls',
+            description: '📄 Add content controls (rich text, dropdown, date picker)',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    controls: { type: 'array' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'controls'],
+            },
+        },
+        {
+            name: 'word_smart_art',
+            description: '📄 Insert SmartArt (process, hierarchy, relationship)',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    smartArt: { type: 'object' },
+                    position: { type: 'number' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'smartArt'],
+            },
+        },
+        {
+            name: 'word_equations',
+            description: '📄 Insert equations (LaTeX, MathML, linear format)',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    equations: { type: 'array' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'equations'],
+            },
+        },
+        {
+            name: 'word_symbols',
+            description: '📄 Insert special characters and symbols',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    symbols: { type: 'array' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'symbols'],
+            },
+        },
+        {
+            name: 'word_accessibility_check',
+            description: '📄 Check document accessibility compliance',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    checks: { type: 'object' },
+                    autoFix: { type: 'boolean' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'checks'],
+            },
+        },
+        {
+            name: 'word_alt_text',
+            description: '📄 Add alt text to images for accessibility',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    altTexts: { type: 'array' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'altTexts'],
+            },
+        },
+        {
+            name: 'word_digital_signature',
+            description: '📄 Add or verify digital signatures',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    action: { type: 'string', enum: ['add', 'remove', 'verify'] },
+                    certificatePath: { type: 'string' },
+                    password: { type: 'string' },
+                    reason: { type: 'string' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'action'],
+            },
+        },
+        {
+            name: 'word_protect_document',
+            description: '📄 Protect document (read-only, forms, tracked changes)',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    protection: { type: 'object' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'protection'],
+            },
+        },
+        {
+            name: 'word_master_document',
+            description: '📄 Create master document with subdocuments',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    subdocuments: { type: 'array' },
+                    generateTOC: { type: 'boolean' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'subdocuments'],
+            },
+        },
+        {
+            name: 'word_document_info',
+            description: '📄 Set document metadata (author, title, keywords)',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    info: { type: 'object' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'info'],
+            },
+        },
+        {
+            name: 'word_captions',
+            description: '📄 Add figure and table captions',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    captions: { type: 'array' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'captions'],
+            },
+        },
+        {
+            name: 'word_advanced_hyperlinks',
+            description: '📄 Add advanced hyperlinks with tooltips',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    hyperlinks: { type: 'array' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'hyperlinks'],
+            },
+        },
+        {
+            name: 'word_drop_cap',
+            description: '📄 Add drop cap formatting to paragraphs',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    paragraphIndex: { type: 'number' },
+                    style: { type: 'string', enum: ['dropped', 'inMargin'] },
+                    lines: { type: 'number' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'paragraphIndex', 'style'],
+            },
+        },
+        {
+            name: 'word_watermark',
+            description: '📄 Add text or image watermark',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    watermark: { type: 'object' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'watermark'],
+            },
+        },
         // ========== POWERPOINT TOOLS (13 tools) ==========
         {
             name: 'create_powerpoint',
@@ -737,6 +1262,238 @@ class OfficeWhispererServer {
                     outputPath: { type: 'string' },
                 },
                 required: ['filename', 'slideNumber', 'buttons'],
+            },
+        },
+        {
+            name: 'ppt_smart_art',
+            description: '🎯 SmartArt graphics (list, process, hierarchy, cycle)',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    slideNumber: { type: 'number' },
+                    smartArt: { type: 'object' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'slideNumber', 'smartArt'],
+            },
+        },
+        {
+            name: 'ppt_insert_icons',
+            description: '🎯 Insert Microsoft SVG icons from library',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    slideNumber: { type: 'number' },
+                    icons: { type: 'array' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'slideNumber', 'icons'],
+            },
+        },
+        {
+            name: 'ppt_3d_models',
+            description: '🎯 Insert 3D models (.glb, .fbx)',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    slideNumber: { type: 'number' },
+                    models: { type: 'array' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'slideNumber', 'models'],
+            },
+        },
+        {
+            name: 'ppt_zoom',
+            description: '🎯 Summary/Slide/Section Zoom navigation',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    slideNumber: { type: 'number' },
+                    zooms: { type: 'array' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'slideNumber', 'zooms'],
+            },
+        },
+        {
+            name: 'ppt_recording',
+            description: '🎯 Screen recording configuration',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    recording: { type: 'object' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'recording'],
+            },
+        },
+        {
+            name: 'ppt_live_web',
+            description: '🎯 Embed live web page in slide',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    slideNumber: { type: 'number' },
+                    webPages: { type: 'array' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'slideNumber', 'webPages'],
+            },
+        },
+        {
+            name: 'ppt_designer',
+            description: '🎯 PowerPoint Designer suggestions',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    slideNumber: { type: 'number' },
+                    preferences: { type: 'object' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename'],
+            },
+        },
+        {
+            name: 'ppt_collaboration',
+            description: '🎯 Add comments and @mentions',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    comments: { type: 'array' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'comments'],
+            },
+        },
+        {
+            name: 'ppt_presenter_coach',
+            description: '🎯 Presenter Coach rehearsal settings',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    settings: { type: 'object' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'settings'],
+            },
+        },
+        {
+            name: 'ppt_subtitles',
+            description: '🎯 Live subtitles and captions configuration',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    subtitles: { type: 'object' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'subtitles'],
+            },
+        },
+        {
+            name: 'ppt_ink_annotations',
+            description: '🎯 Digital ink drawings and annotations',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    slideNumber: { type: 'number' },
+                    annotations: { type: 'array' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'slideNumber', 'annotations'],
+            },
+        },
+        {
+            name: 'ppt_grid_guides',
+            description: '🎯 Grids and guides for alignment',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    slideNumber: { type: 'number' },
+                    grid: { type: 'object' },
+                    guides: { type: 'object' },
+                    smartGuides: { type: 'boolean' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename'],
+            },
+        },
+        {
+            name: 'ppt_custom_show',
+            description: '🎯 Create custom slide shows',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    shows: { type: 'array' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'shows'],
+            },
+        },
+        {
+            name: 'ppt_animation_pane',
+            description: '🎯 Animation pane for timing and order',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    slideNumber: { type: 'number' },
+                    animations: { type: 'array' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'slideNumber', 'animations'],
+            },
+        },
+        {
+            name: 'ppt_slide_master_advanced',
+            description: '🎯 Advanced slide master customization',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    master: { type: 'object' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'master'],
+            },
+        },
+        {
+            name: 'ppt_theme',
+            description: '🎯 Apply and customize themes',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    theme: { type: 'object' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'theme'],
+            },
+        },
+        {
+            name: 'ppt_template',
+            description: '🎯 Save as template with placeholders',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    filename: { type: 'string' },
+                    template: { type: 'object' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['filename', 'template'],
             },
         },
         // ========== OUTLOOK TOOLS (13 tools) ==========
@@ -946,6 +1703,297 @@ class OfficeWhispererServer {
                 required: ['query'],
             },
         },
+        {
+            name: 'outlook_read_full_email',
+            description: '📧 Full IMAP email read with attachments and headers',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    messageIds: { type: 'array' },
+                    folder: { type: 'string' },
+                    includeAttachments: { type: 'boolean' },
+                    includeHeaders: { type: 'boolean' },
+                    markAsRead: { type: 'boolean' },
+                    imapConfig: { type: 'object' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['messageIds'],
+            },
+        },
+        {
+            name: 'outlook_delete_email',
+            description: '📧 Delete emails via IMAP',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    messageIds: { type: 'array' },
+                    folder: { type: 'string' },
+                    permanent: { type: 'boolean' },
+                    imapConfig: { type: 'object' },
+                },
+                required: ['messageIds'],
+            },
+        },
+        {
+            name: 'outlook_move_email',
+            description: '📧 Move emails between IMAP folders',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    messageIds: { type: 'array' },
+                    fromFolder: { type: 'string' },
+                    toFolder: { type: 'string' },
+                    createFolder: { type: 'boolean' },
+                    imapConfig: { type: 'object' },
+                },
+                required: ['messageIds', 'toFolder'],
+            },
+        },
+        {
+            name: 'outlook_create_folder',
+            description: '📧 Create IMAP folder structure',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    folderPath: { type: 'string' },
+                    parent: { type: 'string' },
+                    imapConfig: { type: 'object' },
+                },
+                required: ['folderPath'],
+            },
+        },
+        {
+            name: 'outlook_shared_mailbox',
+            description: '📧 Access shared mailboxes and delegate accounts',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    sharedMailbox: { type: 'string' },
+                    operation: { type: 'string', enum: ['list', 'send', 'read', 'move', 'delete'] },
+                    folder: { type: 'string' },
+                    messageIds: { type: 'array' },
+                    emailData: { type: 'object' },
+                    imapConfig: { type: 'object' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['sharedMailbox', 'operation'],
+            },
+        },
+        {
+            name: 'outlook_delegate_access',
+            description: '📧 Grant delegate permissions to users',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    delegateEmail: { type: 'string' },
+                    permissions: { type: 'object' },
+                    receiveNotifications: { type: 'boolean' },
+                    privateItemsAccess: { type: 'boolean' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['delegateEmail', 'permissions'],
+            },
+        },
+        {
+            name: 'outlook_out_of_office',
+            description: '📧 Set automatic replies/out of office',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    enable: { type: 'boolean' },
+                    startTime: { type: 'string' },
+                    endTime: { type: 'string' },
+                    message: { type: 'object' },
+                    externalAudience: { type: 'string' },
+                    declineNewMeetings: { type: 'boolean' },
+                    imapConfig: { type: 'object' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['enable', 'message'],
+            },
+        },
+        {
+            name: 'outlook_notes',
+            description: '📧 Create Outlook notes',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    notes: { type: 'array' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['notes'],
+            },
+        },
+        {
+            name: 'outlook_journal',
+            description: '📧 Create journal entries for activity tracking',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    entries: { type: 'array' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['entries'],
+            },
+        },
+        {
+            name: 'outlook_rss_feed',
+            description: '📧 Subscribe to and manage RSS feeds',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    operation: { type: 'string', enum: ['add', 'remove', 'list', 'update'] },
+                    feeds: { type: 'array' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['operation'],
+            },
+        },
+        {
+            name: 'outlook_data_file',
+            description: '📧 Manage PST/OST data files',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    operation: { type: 'string', enum: ['create', 'open', 'close', 'compact', 'info'] },
+                    filePath: { type: 'string' },
+                    fileType: { type: 'string', enum: ['pst', 'ost'] },
+                    password: { type: 'string' },
+                    displayName: { type: 'string' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['operation'],
+            },
+        },
+        {
+            name: 'outlook_quick_steps',
+            description: '📧 Create Quick Steps for email automation',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    steps: { type: 'array' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['steps'],
+            },
+        },
+        {
+            name: 'outlook_conversation_view',
+            description: '📧 Configure conversation view settings',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    enable: { type: 'boolean' },
+                    settings: { type: 'object' },
+                    folders: { type: 'array' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['enable'],
+            },
+        },
+        {
+            name: 'outlook_cleanup',
+            description: '📧 Clean up redundant messages in conversations',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    folder: { type: 'string' },
+                    scope: { type: 'string', enum: ['conversation', 'folderAndSubfolders', 'selectedMessages'] },
+                    messageIds: { type: 'array' },
+                    deleteRedundant: { type: 'boolean' },
+                    imapConfig: { type: 'object' },
+                },
+                required: ['scope'],
+            },
+        },
+        {
+            name: 'outlook_ignore_conversation',
+            description: '📧 Ignore conversation threads',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    conversationIds: { type: 'array' },
+                    restore: { type: 'boolean' },
+                    deleteExisting: { type: 'boolean' },
+                    imapConfig: { type: 'object' },
+                },
+                required: ['conversationIds'],
+            },
+        },
+        {
+            name: 'outlook_flag_email',
+            description: '📧 Flag emails with colors and due dates',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    messageIds: { type: 'array' },
+                    flag: { type: 'object' },
+                    imapConfig: { type: 'object' },
+                },
+                required: ['messageIds', 'flag'],
+            },
+        },
+        {
+            name: 'outlook_categories',
+            description: '📧 Create and apply color categories',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    operation: { type: 'string', enum: ['create', 'apply', 'remove', 'list'] },
+                    categories: { type: 'array' },
+                    messageIds: { type: 'array' },
+                    categoryNames: { type: 'array' },
+                    imapConfig: { type: 'object' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['operation'],
+            },
+        },
+        {
+            name: 'outlook_signature',
+            description: '📧 Create HTML email signatures',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    signatures: { type: 'array' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['signatures'],
+            },
+        },
+        {
+            name: 'outlook_autocomplete',
+            description: '📧 Manage autocomplete nickname cache',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    operation: { type: 'string', enum: ['list', 'add', 'remove', 'clear', 'export', 'import'] },
+                    entries: { type: 'array' },
+                    filePath: { type: 'string' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['operation'],
+            },
+        },
+        {
+            name: 'outlook_mail_merge_advanced',
+            description: '📧 Advanced mail merge with filters and conditional content',
+            inputSchema: {
+                type: 'object',
+                properties: {
+                    templatePath: { type: 'string' },
+                    template: { type: 'object' },
+                    dataSource: { type: 'array' },
+                    filters: { type: 'array' },
+                    conditionalContent: { type: 'array' },
+                    attachments: { type: 'array' },
+                    sendOptions: { type: 'object' },
+                    smtpConfig: { type: 'object' },
+                    outputPath: { type: 'string' },
+                },
+                required: ['dataSource'],
+            },
+        },
     ];
     async start() {
         process.stdin.setEncoding('utf-8');
@@ -1099,6 +2147,57 @@ class OfficeWhispererServer {
             else if (name === 'excel_add_slicers') {
                 result = await this.handleExcelAddSlicers(args);
             }
+            else if (name === 'excel_power_query') {
+                result = await this.handleExcelPowerQuery(args);
+            }
+            else if (name === 'excel_goal_seek') {
+                result = await this.handleExcelGoalSeek(args);
+            }
+            else if (name === 'excel_data_table') {
+                result = await this.handleExcelDataTable(args);
+            }
+            else if (name === 'excel_scenario_manager') {
+                result = await this.handleExcelScenarioManager(args);
+            }
+            else if (name === 'excel_create_table') {
+                result = await this.handleExcelCreateTable(args);
+            }
+            else if (name === 'excel_table_formula') {
+                result = await this.handleExcelTableFormula(args);
+            }
+            else if (name === 'excel_form_controls') {
+                result = await this.handleExcelFormControls(args);
+            }
+            else if (name === 'excel_insert_images') {
+                result = await this.handleExcelInsertImages(args);
+            }
+            else if (name === 'excel_insert_shapes') {
+                result = await this.handleExcelInsertShapes(args);
+            }
+            else if (name === 'excel_smart_art') {
+                result = await this.handleExcelSmartArt(args);
+            }
+            else if (name === 'excel_page_setup') {
+                result = await this.handleExcelPageSetup(args);
+            }
+            else if (name === 'excel_header_footer') {
+                result = await this.handleExcelHeaderFooter(args);
+            }
+            else if (name === 'excel_page_breaks') {
+                result = await this.handleExcelPageBreaks(args);
+            }
+            else if (name === 'excel_track_changes') {
+                result = await this.handleExcelTrackChanges(args);
+            }
+            else if (name === 'excel_share_workbook') {
+                result = await this.handleExcelShareWorkbook(args);
+            }
+            else if (name === 'excel_compare_versions') {
+                result = await this.handleExcelCompareVersions(args);
+            }
+            else if (name === 'excel_add_comments') {
+                result = await this.handleExcelAddComments(args);
+            }
             // Word Tools
             else if (name === 'create_word') {
                 result = await this.handleCreateWord(args);
@@ -1148,6 +2247,63 @@ class OfficeWhispererServer {
             else if (name === 'word_add_cross_references') {
                 result = await this.handleWordAddCrossReferences(args);
             }
+            else if (name === 'word_bibliography') {
+                result = await this.handleWordBibliography(args);
+            }
+            else if (name === 'word_citations') {
+                result = await this.handleWordCitations(args);
+            }
+            else if (name === 'word_index') {
+                result = await this.handleWordIndex(args);
+            }
+            else if (name === 'word_mark_index_entry') {
+                result = await this.handleWordMarkIndexEntry(args);
+            }
+            else if (name === 'word_form_fields') {
+                result = await this.handleWordFormFields(args);
+            }
+            else if (name === 'word_content_controls') {
+                result = await this.handleWordContentControls(args);
+            }
+            else if (name === 'word_smart_art') {
+                result = await this.handleWordSmartArt(args);
+            }
+            else if (name === 'word_equations') {
+                result = await this.handleWordEquations(args);
+            }
+            else if (name === 'word_symbols') {
+                result = await this.handleWordSymbols(args);
+            }
+            else if (name === 'word_accessibility_check') {
+                result = await this.handleWordAccessibilityCheck(args);
+            }
+            else if (name === 'word_alt_text') {
+                result = await this.handleWordAltText(args);
+            }
+            else if (name === 'word_digital_signature') {
+                result = await this.handleWordDigitalSignature(args);
+            }
+            else if (name === 'word_protect_document') {
+                result = await this.handleWordProtectDocument(args);
+            }
+            else if (name === 'word_master_document') {
+                result = await this.handleWordMasterDocument(args);
+            }
+            else if (name === 'word_document_info') {
+                result = await this.handleWordDocumentInfo(args);
+            }
+            else if (name === 'word_captions') {
+                result = await this.handleWordCaptions(args);
+            }
+            else if (name === 'word_advanced_hyperlinks') {
+                result = await this.handleWordAdvancedHyperlinks(args);
+            }
+            else if (name === 'word_drop_cap') {
+                result = await this.handleWordDropCap(args);
+            }
+            else if (name === 'word_watermark') {
+                result = await this.handleWordWatermark(args);
+            }
             // PowerPoint Tools
             else if (name === 'create_powerpoint') {
                 result = await this.handleCreatePowerPoint(args);
@@ -1188,6 +2344,57 @@ class OfficeWhispererServer {
             else if (name === 'ppt_add_action_buttons') {
                 result = await this.handlePPTAddActionButtons(args);
             }
+            else if (name === 'ppt_smart_art') {
+                result = await this.handlePPTSmartArt(args);
+            }
+            else if (name === 'ppt_insert_icons') {
+                result = await this.handlePPTInsertIcons(args);
+            }
+            else if (name === 'ppt_3d_models') {
+                result = await this.handlePPT3DModels(args);
+            }
+            else if (name === 'ppt_zoom') {
+                result = await this.handlePPTZoom(args);
+            }
+            else if (name === 'ppt_recording') {
+                result = await this.handlePPTRecording(args);
+            }
+            else if (name === 'ppt_live_web') {
+                result = await this.handlePPTLiveWeb(args);
+            }
+            else if (name === 'ppt_designer') {
+                result = await this.handlePPTDesigner(args);
+            }
+            else if (name === 'ppt_collaboration') {
+                result = await this.handlePPTCollaboration(args);
+            }
+            else if (name === 'ppt_presenter_coach') {
+                result = await this.handlePPTPresenterCoach(args);
+            }
+            else if (name === 'ppt_subtitles') {
+                result = await this.handlePPTSubtitles(args);
+            }
+            else if (name === 'ppt_ink_annotations') {
+                result = await this.handlePPTInkAnnotations(args);
+            }
+            else if (name === 'ppt_grid_guides') {
+                result = await this.handlePPTGridGuides(args);
+            }
+            else if (name === 'ppt_custom_show') {
+                result = await this.handlePPTCustomShow(args);
+            }
+            else if (name === 'ppt_animation_pane') {
+                result = await this.handlePPTAnimationPane(args);
+            }
+            else if (name === 'ppt_slide_master_advanced') {
+                result = await this.handlePPTSlideMasterAdvanced(args);
+            }
+            else if (name === 'ppt_theme') {
+                result = await this.handlePPTTheme(args);
+            }
+            else if (name === 'ppt_template') {
+                result = await this.handlePPTTemplate(args);
+            }
             // Outlook Tools
             else if (name === 'outlook_send_email') {
                 result = await this.handleOutlookSendEmail(args);
@@ -1227,6 +2434,66 @@ class OfficeWhispererServer {
             }
             else if (name === 'outlook_search_contacts') {
                 result = await this.handleOutlookSearchContacts(args);
+            }
+            else if (name === 'outlook_read_full_email') {
+                result = await this.handleOutlookReadFullEmail(args);
+            }
+            else if (name === 'outlook_delete_email') {
+                result = await this.handleOutlookDeleteEmail(args);
+            }
+            else if (name === 'outlook_move_email') {
+                result = await this.handleOutlookMoveEmail(args);
+            }
+            else if (name === 'outlook_create_folder') {
+                result = await this.handleOutlookCreateFolder(args);
+            }
+            else if (name === 'outlook_shared_mailbox') {
+                result = await this.handleOutlookSharedMailbox(args);
+            }
+            else if (name === 'outlook_delegate_access') {
+                result = await this.handleOutlookDelegateAccess(args);
+            }
+            else if (name === 'outlook_out_of_office') {
+                result = await this.handleOutlookOutOfOffice(args);
+            }
+            else if (name === 'outlook_notes') {
+                result = await this.handleOutlookNotes(args);
+            }
+            else if (name === 'outlook_journal') {
+                result = await this.handleOutlookJournal(args);
+            }
+            else if (name === 'outlook_rss_feed') {
+                result = await this.handleOutlookRSSFeed(args);
+            }
+            else if (name === 'outlook_data_file') {
+                result = await this.handleOutlookDataFile(args);
+            }
+            else if (name === 'outlook_quick_steps') {
+                result = await this.handleOutlookQuickSteps(args);
+            }
+            else if (name === 'outlook_conversation_view') {
+                result = await this.handleOutlookConversationView(args);
+            }
+            else if (name === 'outlook_cleanup') {
+                result = await this.handleOutlookCleanup(args);
+            }
+            else if (name === 'outlook_ignore_conversation') {
+                result = await this.handleOutlookIgnoreConversation(args);
+            }
+            else if (name === 'outlook_flag_email') {
+                result = await this.handleOutlookFlagEmail(args);
+            }
+            else if (name === 'outlook_categories') {
+                result = await this.handleOutlookCategories(args);
+            }
+            else if (name === 'outlook_signature') {
+                result = await this.handleOutlookSignature(args);
+            }
+            else if (name === 'outlook_autocomplete') {
+                result = await this.handleOutlookAutocomplete(args);
+            }
+            else if (name === 'outlook_mail_merge_advanced') {
+                result = await this.handleOutlookMailMergeAdvanced(args);
             }
             else {
                 throw new Error(`Unknown tool: ${name}`);
@@ -1705,6 +2972,524 @@ class OfficeWhispererServer {
         const fullPath = path.join(outputPath, filename);
         await fs.writeFile(fullPath, result, 'utf-8');
         return `✅ **Contact search completed!**\n\n🔍 **Query:** ${args.query}\n📁 **File:** ${fullPath}`;
+    }
+    // ========== EXCEL v4.0 HANDLERS ==========
+    async handleExcelPowerQuery(args) {
+        const buffer = await this.excelGen.addPowerQuery(args.filename, args.sheetName, args.queryName, args.source, args.transformations);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Power Query added!**\n\n📊 **Query:** ${args.queryName}\n📁 **File:** ${fullPath}`;
+    }
+    async handleExcelGoalSeek(args) {
+        const buffer = await this.excelGen.goalSeek(args.filename, args.sheetName, args.setCell, args.toValue, args.byChangingCell);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Goal Seek configured!**\n\n🎯 **Target:** ${args.toValue}\n📍 **Cell:** ${args.setCell}\n📁 **File:** ${fullPath}`;
+    }
+    async handleExcelDataTable(args) {
+        const buffer = await this.excelGen.createDataTable(args.filename, args.sheetName, args.type, args.formulaCell, args.rowInputCell, args.columnInputCell);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Data table created!**\n\n📊 **Type:** ${args.type}\n📁 **File:** ${fullPath}`;
+    }
+    async handleExcelScenarioManager(args) {
+        const buffer = await this.excelGen.manageScenarios(args.filename, args.sheetName, args.scenarios, args.resultCells);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Scenarios created!**\n\n📈 **Count:** ${args.scenarios.length}\n📁 **File:** ${fullPath}`;
+    }
+    async handleExcelCreateTable(args) {
+        const buffer = await this.excelGen.createTable(args.filename, args.sheetName, args.tableName, args.range, args.hasHeaders, args.style, args.showTotalRow);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Table created!**\n\n📊 **Name:** ${args.tableName}\n📍 **Range:** ${args.range}\n📁 **File:** ${fullPath}`;
+    }
+    async handleExcelTableFormula(args) {
+        const buffer = await this.excelGen.addTableFormula(args.filename, args.sheetName, args.tableName, args.columnName, args.formula);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Table formula added!**\n\n📊 **Table:** ${args.tableName}\n📍 **Column:** ${args.columnName}\n📁 **File:** ${fullPath}`;
+    }
+    async handleExcelFormControls(args) {
+        const buffer = await this.excelGen.addFormControls(args.filename, args.sheetName, args.controls);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Form controls added!**\n\n📊 **Count:** ${args.controls.length}\n📁 **File:** ${fullPath}`;
+    }
+    async handleExcelInsertImages(args) {
+        const buffer = await this.excelGen.insertImages(args.filename, args.sheetName, args.images);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Images inserted!**\n\n📊 **Count:** ${args.images.length}\n📁 **File:** ${fullPath}`;
+    }
+    async handleExcelInsertShapes(args) {
+        const buffer = await this.excelGen.insertShapes(args.filename, args.sheetName, args.shapes);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Shapes inserted!**\n\n📊 **Count:** ${args.shapes.length}\n📁 **File:** ${fullPath}`;
+    }
+    async handleExcelSmartArt(args) {
+        const buffer = await this.excelGen.addSmartArt(args.filename, args.sheetName, args.smartArt);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **SmartArt added!**\n\n📊 **Type:** ${args.smartArt.type}\n📁 **File:** ${fullPath}`;
+    }
+    async handleExcelPageSetup(args) {
+        const buffer = await this.excelGen.configurePageSetup(args.filename, args.sheetName, args.pageSetup);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Page setup configured!**\n\n📊 **Sheet:** ${args.sheetName}\n📁 **File:** ${fullPath}`;
+    }
+    async handleExcelHeaderFooter(args) {
+        const buffer = await this.excelGen.setHeaderFooter(args.filename, args.sheetName, args.header, args.footer, args.differentFirstPage, args.differentOddEven);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Headers/footers configured!**\n\n📊 **Sheet:** ${args.sheetName}\n📁 **File:** ${fullPath}`;
+    }
+    async handleExcelPageBreaks(args) {
+        const buffer = await this.excelGen.addPageBreaks(args.filename, args.sheetName, args.horizontalBreaks, args.verticalBreaks);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Page breaks configured!**\n\n📊 **Horizontal:** ${args.horizontalBreaks?.length || 0}\n📊 **Vertical:** ${args.verticalBreaks?.length || 0}\n📁 **File:** ${fullPath}`;
+    }
+    async handleExcelTrackChanges(args) {
+        const buffer = await this.excelGen.enableTrackChanges(args.filename, args.enable, args.highlightChanges);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Track changes ${args.enable ? 'enabled' : 'disabled'}!**\n\n📊 **File:** ${fullPath}`;
+    }
+    async handleExcelShareWorkbook(args) {
+        const buffer = await this.excelGen.shareWorkbook(args.filename, args.share, args.allowChanges, args.password);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Workbook sharing ${args.share ? 'enabled' : 'disabled'}!**\n\n📊 **File:** ${fullPath}`;
+    }
+    async handleExcelCompareVersions(args) {
+        // TODO: compareVersions method not yet implemented in ExcelGenerator
+        // const buffer = await this.excelGen.compareVersions(args.originalFile, args.revisedFile, args.highlightDifferences);
+        // const outputPath = args.outputPath || path.dirname(args.originalFile);
+        // const fullPath = path.join(outputPath, 'comparison.xlsx');
+        // await fs.writeFile(fullPath, buffer);
+        return `⚠️ **Compare versions feature not yet implemented.**\n\nPlease check back in a future version of Office Whisperer.`;
+    }
+    async handleExcelAddComments(args) {
+        const buffer = await this.excelGen.addComments(args.filename, args.sheetName, args.comments);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Comments added!**\n\n📊 **Count:** ${args.comments.length}\n📁 **File:** ${fullPath}`;
+    }
+    // ========== WORD v4.0 HANDLERS ==========
+    async handleWordBibliography(args) {
+        const buffer = await this.wordGen.addBibliography(args.filename, args.sources, args.style, args.insertAt);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Bibliography created!**\n\n📄 **Style:** ${args.style || 'APA'}\n📄 **Sources:** ${args.sources.length}\n📁 **File:** ${fullPath}`;
+    }
+    async handleWordCitations(args) {
+        const buffer = await this.wordGen.insertCitations(args.filename, args.citations);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Citations added!**\n\n📄 **Count:** ${args.citations.length}\n📁 **File:** ${fullPath}`;
+    }
+    async handleWordIndex(args) {
+        const buffer = await this.wordGen.createIndex(args.filename, args.entries, args.title, args.columns, args.insertAt);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Index generated!**\n\n📄 **Entries:** ${args.entries.length}\n📁 **File:** ${fullPath}`;
+    }
+    async handleWordMarkIndexEntry(args) {
+        const buffer = await this.wordGen.markIndexEntry(args.filename, args.textToMark, args.entryText, args.crossReference);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Index entry marked!**\n\n📄 **Text:** ${args.textToMark}\n📁 **File:** ${fullPath}`;
+    }
+    async handleWordFormFields(args) {
+        const buffer = await this.wordGen.addFormFields(args.filename, args.fields, args.protectForm);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Form fields added!**\n\n📄 **Count:** ${args.fields.length}\n📁 **File:** ${fullPath}`;
+    }
+    async handleWordContentControls(args) {
+        const buffer = await this.wordGen.addContentControls(args.filename, args.controls);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Content controls added!**\n\n📄 **Count:** ${args.controls.length}\n📁 **File:** ${fullPath}`;
+    }
+    async handleWordSmartArt(args) {
+        const buffer = await this.wordGen.insertSmartArt(args.filename, args.smartArt, args.position);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **SmartArt inserted!**\n\n📄 **Type:** ${args.smartArt.type}\n📁 **File:** ${fullPath}`;
+    }
+    async handleWordEquations(args) {
+        const buffer = await this.wordGen.addEquations(args.filename, args.equations);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Equations inserted!**\n\n📄 **Count:** ${args.equations.length}\n📁 **File:** ${fullPath}`;
+    }
+    async handleWordSymbols(args) {
+        const buffer = await this.wordGen.insertSymbols(args.filename, args.symbols);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Symbols inserted!**\n\n📄 **Count:** ${args.symbols.length}\n📁 **File:** ${fullPath}`;
+    }
+    async handleWordAccessibilityCheck(args) {
+        const buffer = await this.wordGen.checkAccessibility(args.filename, args.checks, args.autoFix);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Accessibility check complete!**\n\n📄 **Auto-fix:** ${args.autoFix ? 'Yes' : 'No'}\n📁 **File:** ${fullPath}`;
+    }
+    async handleWordAltText(args) {
+        const buffer = await this.wordGen.setAltText(args.filename, args.altTexts);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Alt text added!**\n\n📄 **Count:** ${args.altTexts.length}\n📁 **File:** ${fullPath}`;
+    }
+    async handleWordDigitalSignature(args) {
+        const buffer = await this.wordGen.addDigitalSignature(args.filename, args.action, args.certificatePath, args.password, args.reason);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Digital signature ${args.action}!**\n\n📄 **Action:** ${args.action}\n📁 **File:** ${fullPath}`;
+    }
+    async handleWordProtectDocument(args) {
+        const buffer = await this.wordGen.protectDocument(args.filename, args.protection);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Document protected!**\n\n📄 **Type:** ${args.protection.type}\n📁 **File:** ${fullPath}`;
+    }
+    async handleWordMasterDocument(args) {
+        const buffer = await this.wordGen.createMasterDocument(args.filename, args.subdocuments, args.generateTOC);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Master document created!**\n\n📄 **Subdocuments:** ${args.subdocuments.length}\n📁 **File:** ${fullPath}`;
+    }
+    async handleWordDocumentInfo(args) {
+        const buffer = await this.wordGen.setDocumentInfo(args.filename, args.info);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Document metadata updated!**\n\n📄 **File:** ${fullPath}`;
+    }
+    async handleWordCaptions(args) {
+        const buffer = await this.wordGen.addCaptions(args.filename, args.captions);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Captions added!**\n\n📄 **Count:** ${args.captions.length}\n📁 **File:** ${fullPath}`;
+    }
+    async handleWordAdvancedHyperlinks(args) {
+        const buffer = await this.wordGen.addAdvancedHyperlinks(args.filename, args.hyperlinks);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Hyperlinks added!**\n\n📄 **Count:** ${args.hyperlinks.length}\n📁 **File:** ${fullPath}`;
+    }
+    async handleWordDropCap(args) {
+        const buffer = await this.wordGen.addDropCap(args.filename, args.paragraphIndex, args.style, args.lines);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Drop cap added!**\n\n📄 **Style:** ${args.style}\n📁 **File:** ${fullPath}`;
+    }
+    async handleWordWatermark(args) {
+        const buffer = await this.wordGen.addWatermark(args.filename, args.watermark);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Watermark added!**\n\n📄 **Type:** ${args.watermark.type}\n📁 **File:** ${fullPath}`;
+    }
+    // ========== POWERPOINT v4.0 HANDLERS ==========
+    async handlePPTSmartArt(args) {
+        const buffer = await this.pptGen.addSmartArt(args);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **SmartArt added!**\n\n🎯 **Type:** ${args.smartArt.type}\n📊 **Slide:** ${args.slideNumber}\n📁 **File:** ${fullPath}`;
+    }
+    async handlePPTInsertIcons(args) {
+        const buffer = await this.pptGen.insertIcons(args);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Icons inserted!**\n\n🎯 **Count:** ${args.icons.length}\n📊 **Slide:** ${args.slideNumber}\n📁 **File:** ${fullPath}`;
+    }
+    async handlePPT3DModels(args) {
+        const buffer = await this.pptGen.insert3DModels(args);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **3D models inserted!**\n\n🎯 **Count:** ${args.models.length}\n📊 **Slide:** ${args.slideNumber}\n📁 **File:** ${fullPath}`;
+    }
+    async handlePPTZoom(args) {
+        const buffer = await this.pptGen.addZoom(args);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Zoom added!**\n\n🎯 **Count:** ${args.zooms.length}\n📊 **Slide:** ${args.slideNumber}\n📁 **File:** ${fullPath}`;
+    }
+    async handlePPTRecording(args) {
+        const buffer = await this.pptGen.configureRecording(args);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Recording configured!**\n\n🎯 **Type:** ${args.recording.type}\n📁 **File:** ${fullPath}`;
+    }
+    async handlePPTLiveWeb(args) {
+        const buffer = await this.pptGen.embedLiveWeb(args);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Live web page embedded!**\n\n🎯 **Count:** ${args.webPages.length}\n📊 **Slide:** ${args.slideNumber}\n📁 **File:** ${fullPath}`;
+    }
+    async handlePPTDesigner(args) {
+        const buffer = await this.pptGen.applyDesigner(args);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Designer configured!**\n\n🎯 **File:** ${fullPath}`;
+    }
+    async handlePPTCollaboration(args) {
+        const buffer = await this.pptGen.addCollaborationComments(args);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Comments added!**\n\n🎯 **Count:** ${args.comments.length}\n📁 **File:** ${fullPath}`;
+    }
+    async handlePPTPresenterCoach(args) {
+        const buffer = await this.pptGen.configurePresenterCoach(args);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Presenter Coach configured!**\n\n🎯 **File:** ${fullPath}`;
+    }
+    async handlePPTSubtitles(args) {
+        const buffer = await this.pptGen.configureSubtitles(args);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Subtitles configured!**\n\n🎯 **Language:** ${args.subtitles.language || 'auto'}\n📁 **File:** ${fullPath}`;
+    }
+    async handlePPTInkAnnotations(args) {
+        const buffer = await this.pptGen.addInkAnnotations(args);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Ink annotations added!**\n\n🎯 **Count:** ${args.annotations.length}\n📊 **Slide:** ${args.slideNumber}\n📁 **File:** ${fullPath}`;
+    }
+    async handlePPTGridGuides(args) {
+        const buffer = await this.pptGen.configureGridGuides(args);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Grid/guides configured!**\n\n🎯 **File:** ${fullPath}`;
+    }
+    async handlePPTCustomShow(args) {
+        const buffer = await this.pptGen.createCustomShow(args);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Custom shows created!**\n\n🎯 **Count:** ${args.shows.length}\n📁 **File:** ${fullPath}`;
+    }
+    async handlePPTAnimationPane(args) {
+        const buffer = await this.pptGen.manageAnimationPane(args);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Animations configured!**\n\n🎯 **Count:** ${args.animations.length}\n📊 **Slide:** ${args.slideNumber}\n📁 **File:** ${fullPath}`;
+    }
+    async handlePPTSlideMasterAdvanced(args) {
+        const buffer = await this.pptGen.customizeSlideMaster(args);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Slide master customized!**\n\n🎯 **File:** ${fullPath}`;
+    }
+    async handlePPTTheme(args) {
+        const buffer = await this.pptGen.applyPresentationTheme(args);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Theme applied!**\n\n🎯 **Name:** ${args.theme.name || 'Custom'}\n📁 **File:** ${fullPath}`;
+    }
+    async handlePPTTemplate(args) {
+        const buffer = await this.pptGen.saveAsTemplate(args);
+        const outputPath = args.outputPath || path.dirname(args.filename);
+        const fullPath = path.join(outputPath, path.basename(args.filename).replace(/\.pptx$/i, '.potx'));
+        await fs.writeFile(fullPath, buffer);
+        return `✅ **Template saved!**\n\n🎯 **Title:** ${args.template.title}\n📁 **File:** ${fullPath}`;
+    }
+    // ========== OUTLOOK v4.0 HANDLERS ==========
+    async handleOutlookReadFullEmail(args) {
+        const result = await this.outlookGen.readFullEmail(args);
+        const outputPath = args.outputPath || process.cwd();
+        const filename = `email_${Date.now()}.json`;
+        const fullPath = path.join(outputPath, filename);
+        await fs.writeFile(fullPath, result, 'utf-8');
+        return `✅ **Full email read!**\n\n📧 **Messages:** ${args.messageIds.length}\n📁 **File:** ${fullPath}`;
+    }
+    async handleOutlookDeleteEmail(args) {
+        const result = await this.outlookGen.deleteEmail(args);
+        return `✅ **Emails deleted!**\n\n📧 ${result}`;
+    }
+    async handleOutlookMoveEmail(args) {
+        const result = await this.outlookGen.moveEmail(args);
+        return `✅ **Emails moved!**\n\n📧 **To:** ${args.toFolder}\n📧 ${result}`;
+    }
+    async handleOutlookCreateFolder(args) {
+        const result = await this.outlookGen.createFolder(args);
+        return `✅ **Folder created!**\n\n📧 **Path:** ${args.folderPath}\n📧 ${result}`;
+    }
+    async handleOutlookSharedMailbox(args) {
+        const result = await this.outlookGen.accessSharedMailbox(args);
+        const outputPath = args.outputPath || process.cwd();
+        if (args.outputPath && typeof result === 'string') {
+            const filename = `shared_mailbox_${Date.now()}.json`;
+            const fullPath = path.join(outputPath, filename);
+            await fs.writeFile(fullPath, result, 'utf-8');
+            return `✅ **Shared mailbox operation complete!**\n\n📧 **Mailbox:** ${args.sharedMailbox}\n📧 **Operation:** ${args.operation}\n📁 **File:** ${fullPath}`;
+        }
+        return `✅ **Shared mailbox operation complete!**\n\n📧 **Mailbox:** ${args.sharedMailbox}\n📧 **Operation:** ${args.operation}`;
+    }
+    async handleOutlookDelegateAccess(args) {
+        const result = await this.outlookGen.grantDelegateAccess(args);
+        const outputPath = args.outputPath || process.cwd();
+        const filename = `delegate_${Date.now()}.json`;
+        const fullPath = path.join(outputPath, filename);
+        await fs.writeFile(fullPath, result, 'utf-8');
+        return `✅ **Delegate access granted!**\n\n📧 **Delegate:** ${args.delegateEmail}\n📁 **File:** ${fullPath}`;
+    }
+    async handleOutlookOutOfOffice(args) {
+        const result = await this.outlookGen.setOutOfOffice(args);
+        const outputPath = args.outputPath || process.cwd();
+        const filename = `out_of_office_${Date.now()}.json`;
+        const fullPath = path.join(outputPath, filename);
+        await fs.writeFile(fullPath, result, 'utf-8');
+        return `✅ **Out of office ${args.enable ? 'enabled' : 'disabled'}!**\n\n📧 **File:** ${fullPath}`;
+    }
+    async handleOutlookNotes(args) {
+        const result = await this.outlookGen.createNotes(args);
+        const outputPath = args.outputPath || process.cwd();
+        const filename = `notes_${Date.now()}.json`;
+        const fullPath = path.join(outputPath, filename);
+        await fs.writeFile(fullPath, result, 'utf-8');
+        return `✅ **Notes created!**\n\n📧 **Count:** ${args.notes.length}\n📁 **File:** ${fullPath}`;
+    }
+    async handleOutlookJournal(args) {
+        const result = await this.outlookGen.createJournalEntry(args);
+        const outputPath = args.outputPath || process.cwd();
+        const filename = `journal_${Date.now()}.json`;
+        const fullPath = path.join(outputPath, filename);
+        await fs.writeFile(fullPath, result, 'utf-8');
+        return `✅ **Journal entries created!**\n\n📧 **Count:** ${args.entries.length}\n📁 **File:** ${fullPath}`;
+    }
+    async handleOutlookRSSFeed(args) {
+        const result = await this.outlookGen.manageRSSFeed(args);
+        const outputPath = args.outputPath || process.cwd();
+        const filename = `rss_feeds_${Date.now()}.json`;
+        const fullPath = path.join(outputPath, filename);
+        await fs.writeFile(fullPath, result, 'utf-8');
+        return `✅ **RSS feed operation complete!**\n\n📧 **Operation:** ${args.operation}\n📁 **File:** ${fullPath}`;
+    }
+    async handleOutlookDataFile(args) {
+        const result = await this.outlookGen.manageDataFile(args);
+        const outputPath = args.outputPath || process.cwd();
+        const filename = `data_file_${Date.now()}.json`;
+        const fullPath = path.join(outputPath, filename);
+        await fs.writeFile(fullPath, result, 'utf-8');
+        return `✅ **Data file operation complete!**\n\n📧 **Operation:** ${args.operation}\n📁 **File:** ${fullPath}`;
+    }
+    async handleOutlookQuickSteps(args) {
+        const result = await this.outlookGen.createQuickStep(args);
+        const outputPath = args.outputPath || process.cwd();
+        const filename = `quick_steps_${Date.now()}.json`;
+        const fullPath = path.join(outputPath, filename);
+        await fs.writeFile(fullPath, result, 'utf-8');
+        return `✅ **Quick Steps created!**\n\n📧 **Count:** ${args.steps.length}\n📁 **File:** ${fullPath}`;
+    }
+    async handleOutlookConversationView(args) {
+        const result = await this.outlookGen.configureConversationView(args);
+        const outputPath = args.outputPath || process.cwd();
+        const filename = `conversation_view_${Date.now()}.json`;
+        const fullPath = path.join(outputPath, filename);
+        await fs.writeFile(fullPath, result, 'utf-8');
+        return `✅ **Conversation view ${args.enable ? 'enabled' : 'disabled'}!**\n\n📧 **File:** ${fullPath}`;
+    }
+    async handleOutlookCleanup(args) {
+        const result = await this.outlookGen.cleanupMessages(args);
+        return `✅ **Cleanup complete!**\n\n📧 **Scope:** ${args.scope}\n📧 ${result}`;
+    }
+    async handleOutlookIgnoreConversation(args) {
+        const result = await this.outlookGen.ignoreConversation(args);
+        return `✅ **Conversation ${args.restore ? 'restored' : 'ignored'}!**\n\n📧 ${result}`;
+    }
+    async handleOutlookFlagEmail(args) {
+        const result = await this.outlookGen.flagEmail(args);
+        return `✅ **Emails flagged!**\n\n📧 **Type:** ${args.flag.type}\n📧 ${result}`;
+    }
+    async handleOutlookCategories(args) {
+        const result = await this.outlookGen.manageCategories(args);
+        const outputPath = args.outputPath || process.cwd();
+        if (args.outputPath && typeof result === 'string') {
+            const filename = `categories_${Date.now()}.json`;
+            const fullPath = path.join(outputPath, filename);
+            await fs.writeFile(fullPath, result, 'utf-8');
+            return `✅ **Category operation complete!**\n\n📧 **Operation:** ${args.operation}\n📁 **File:** ${fullPath}`;
+        }
+        return `✅ **Category operation complete!**\n\n📧 **Operation:** ${args.operation}`;
+    }
+    async handleOutlookSignature(args) {
+        const result = await this.outlookGen.createSignature(args);
+        const outputPath = args.outputPath || process.cwd();
+        const filename = `signatures_${Date.now()}.json`;
+        const fullPath = path.join(outputPath, filename);
+        await fs.writeFile(fullPath, result, 'utf-8');
+        return `✅ **Signatures created!**\n\n📧 **Count:** ${args.signatures.length}\n📁 **File:** ${fullPath}`;
+    }
+    async handleOutlookAutocomplete(args) {
+        const result = await this.outlookGen.manageAutoComplete(args);
+        const outputPath = args.outputPath || process.cwd();
+        const filename = `autocomplete_${Date.now()}.json`;
+        const fullPath = path.join(outputPath, filename);
+        await fs.writeFile(fullPath, result, 'utf-8');
+        return `✅ **Autocomplete operation complete!**\n\n📧 **Operation:** ${args.operation}\n📁 **File:** ${fullPath}`;
+    }
+    async handleOutlookMailMergeAdvanced(args) {
+        const result = await this.outlookGen.advancedMailMerge(args);
+        const outputPath = args.outputPath || process.cwd();
+        const filename = `mail_merge_${Date.now()}.json`;
+        const fullPath = path.join(outputPath, filename);
+        await fs.writeFile(fullPath, result, 'utf-8');
+        return `✅ **Mail merge complete!**\n\n📧 **Recipients:** ${args.dataSource.length}\n📁 **File:** ${fullPath}`;
     }
 }
 // Start the server

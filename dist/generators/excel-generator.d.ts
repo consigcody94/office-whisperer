@@ -57,5 +57,47 @@ export declare class ExcelGenerator {
         };
     }>): Promise<Buffer>;
     private numberToColumn;
+    addPowerQuery(filename: string, sheetName: string, queryName: string, source: any, transformations?: any[]): Promise<Buffer>;
+    goalSeek(filename: string, sheetName: string, setCell: string, toValue: number, byChangingCell: string): Promise<Buffer>;
+    createDataTable(filename: string, sheetName: string, type: 'oneVariable' | 'twoVariable', formulaCell: string, rowInputCell?: string, columnInputCell?: string, outputRange?: string): Promise<Buffer>;
+    manageScenarios(filename: string, sheetName: string, scenarios: Array<{
+        name: string;
+        changingCells: string[];
+        values: (string | number)[];
+        comment?: string;
+    }>, resultCells?: string[]): Promise<Buffer>;
+    createTable(filename: string, sheetName: string, tableName: string, range: string, hasHeaders?: boolean, style?: string, showTotalRow?: boolean): Promise<Buffer>;
+    addTableFormula(filename: string, sheetName: string, tableName: string, columnName: string, formula: string): Promise<Buffer>;
+    addFormControls(filename: string, sheetName: string, controls: Array<any>): Promise<Buffer>;
+    insertImages(filename: string, sheetName: string, images: Array<{
+        path: string;
+        position: {
+            row: number;
+            col: number;
+        };
+        size?: {
+            width: number;
+            height: number;
+        };
+        description?: string;
+        hyperlink?: string;
+    }>): Promise<Buffer>;
+    insertShapes(filename: string, sheetName: string, shapes: Array<any>): Promise<Buffer>;
+    addSmartArt(filename: string, sheetName: string, smartArt: any): Promise<Buffer>;
+    configurePageSetup(filename: string, sheetName: string, pageSetup: any): Promise<Buffer>;
+    setHeaderFooter(filename: string, sheetName: string, header?: any, footer?: any, differentFirstPage?: boolean, differentOddEven?: boolean): Promise<Buffer>;
+    addPageBreaks(filename: string, sheetName: string, horizontalBreaks?: number[], verticalBreaks?: number[]): Promise<Buffer>;
+    enableTrackChanges(filename: string, enable: boolean, highlightChanges?: boolean): Promise<Buffer>;
+    shareWorkbook(filename: string, share: boolean, allowChanges?: boolean, password?: string): Promise<Buffer>;
+    addComments(filename: string, sheetName: string, comments: Array<{
+        cell: string;
+        text: string;
+        author?: string;
+        visible?: boolean;
+    }>): Promise<Buffer>;
+    private getTableColumnsFromRange;
+    private getTableRowsFromRange;
+    private getPaperSizeCode;
+    private formatHeaderFooter;
 }
 //# sourceMappingURL=excel-generator.d.ts.map
