@@ -448,3 +448,383 @@ export interface AddPowerPointSlideArgs {
   slide: PowerPointSlide;
   position?: number;
 }
+
+// ============================================================================
+// Advanced Excel Tool Arguments
+// ============================================================================
+
+export interface ExcelAddPivotTableArgs {
+  filename: string;
+  sheetName: string;
+  pivotTable: ExcelPivotTable;
+  outputPath?: string;
+}
+
+export interface ExcelAddChartArgs {
+  filename: string;
+  sheetName: string;
+  chart: ExcelChart;
+  outputPath?: string;
+}
+
+export interface ExcelAddFormulaArgs {
+  filename: string;
+  sheetName: string;
+  formulas: ExcelFormula[];
+  outputPath?: string;
+}
+
+export interface ExcelConditionalFormattingArgs {
+  filename: string;
+  sheetName: string;
+  range: string;
+  rules: ExcelConditionalFormattingRule[];
+  outputPath?: string;
+}
+
+export interface ExcelConditionalFormattingRule {
+  type: 'colorScale' | 'dataBar' | 'iconSet' | 'formulaBased' | 'cellValue';
+  formula?: string;
+  priority?: number;
+  color?: string;
+  gradient?: { start: string; middle?: string; end: string };
+  iconSet?: 'ThreeArrows' | 'ThreeFlags' | 'FourRating' | 'FiveQuarters';
+  operator?: 'greaterThan' | 'lessThan' | 'between' | 'equal' | 'notEqual';
+  values?: (number | string)[];
+}
+
+export interface ExcelDataValidationArgs {
+  filename: string;
+  sheetName: string;
+  range: string;
+  validation: ExcelDataValidation;
+  outputPath?: string;
+}
+
+export interface ExcelDataValidation {
+  type: 'list' | 'whole' | 'decimal' | 'date' | 'time' | 'textLength' | 'custom';
+  formula?: string;
+  values?: string[];
+  operator?: 'between' | 'notBetween' | 'equal' | 'notEqual' | 'greaterThan' | 'lessThan';
+  min?: number | string;
+  max?: number | string;
+  allowBlank?: boolean;
+  showErrorMessage?: boolean;
+  errorTitle?: string;
+  error?: string;
+  showInputMessage?: boolean;
+  promptTitle?: string;
+  prompt?: string;
+}
+
+export interface ExcelFreezePanesArgs {
+  filename: string;
+  sheetName: string;
+  row?: number;
+  column?: number;
+  outputPath?: string;
+}
+
+export interface ExcelFilterSortArgs {
+  filename: string;
+  sheetName: string;
+  range?: string;
+  sortBy?: { column: string | number; descending?: boolean }[];
+  autoFilter?: boolean;
+  outputPath?: string;
+}
+
+export interface ExcelFormatCellsArgs {
+  filename: string;
+  sheetName: string;
+  range: string;
+  style: ExcelCellStyle;
+  outputPath?: string;
+}
+
+export interface ExcelNamedRangeArgs {
+  filename: string;
+  name: string;
+  range: string;
+  sheetName?: string;
+  outputPath?: string;
+}
+
+export interface ExcelProtectSheetArgs {
+  filename: string;
+  sheetName: string;
+  password?: string;
+  options?: {
+    selectLockedCells?: boolean;
+    selectUnlockedCells?: boolean;
+    formatCells?: boolean;
+    formatColumns?: boolean;
+    formatRows?: boolean;
+    insertColumns?: boolean;
+    insertRows?: boolean;
+    insertHyperlinks?: boolean;
+    deleteColumns?: boolean;
+    deleteRows?: boolean;
+    sort?: boolean;
+    autoFilter?: boolean;
+    pivotTables?: boolean;
+  };
+  outputPath?: string;
+}
+
+export interface ExcelMergeWorkbooksArgs {
+  files: string[];
+  outputFilename: string;
+  outputPath?: string;
+}
+
+export interface ExcelFindReplaceArgs {
+  filename: string;
+  sheetName?: string;
+  find: string;
+  replace: string;
+  matchCase?: boolean;
+  matchEntireCell?: boolean;
+  searchFormulas?: boolean;
+  outputPath?: string;
+}
+
+export interface ExcelToJSONArgs {
+  excelPath: string;
+  sheetName?: string;
+  outputPath?: string;
+  header?: boolean;
+}
+
+// ============================================================================
+// Advanced Word Tool Arguments
+// ============================================================================
+
+export interface WordAddTOCArgs {
+  filename: string;
+  outputPath?: string;
+  title?: string;
+  hyperlinks?: boolean;
+  levels?: number;
+}
+
+export interface WordMailMergeArgs {
+  templatePath: string;
+  dataSource: Record<string, string | number>[];
+  outputPath?: string;
+  outputFilename?: string;
+}
+
+export interface WordFindReplaceArgs {
+  filename: string;
+  find: string;
+  replace: string;
+  matchCase?: boolean;
+  matchWholeWord?: boolean;
+  formatting?: {
+    bold?: boolean;
+    italic?: boolean;
+    color?: string;
+  };
+  outputPath?: string;
+}
+
+export interface WordAddCommentArgs {
+  filename: string;
+  text: string;
+  comment: string;
+  author?: string;
+  outputPath?: string;
+}
+
+export interface WordFormatStylesArgs {
+  filename: string;
+  styles: WordStyles;
+  outputPath?: string;
+}
+
+export interface WordInsertImageArgs {
+  filename: string;
+  imagePath: string;
+  position?: { x?: number; y?: number };
+  size?: { width?: number; height?: number };
+  wrapping?: 'inline' | 'square' | 'tight' | 'through' | 'topAndBottom' | 'behind' | 'inFront';
+  outputPath?: string;
+}
+
+export interface WordAddHeaderFooterArgs {
+  filename: string;
+  type: 'header' | 'footer';
+  content: WordElement[];
+  sectionType?: 'default' | 'first' | 'even';
+  outputPath?: string;
+}
+
+export interface WordCompareDocumentsArgs {
+  originalPath: string;
+  revisedPath: string;
+  outputPath?: string;
+  author?: string;
+}
+
+export interface WordToPDFArgs {
+  filename: string;
+  outputPath?: string;
+}
+
+// ============================================================================
+// Advanced PowerPoint Tool Arguments
+// ============================================================================
+
+export interface PPTAddTransitionArgs {
+  filename: string;
+  slideNumber?: number;
+  transition: PPTTransition;
+  outputPath?: string;
+}
+
+export interface PPTTransition {
+  type: 'fade' | 'push' | 'wipe' | 'split' | 'reveal' | 'randomBars' | 'circle' | 'dissolve';
+  duration?: number;
+  direction?: 'left' | 'right' | 'up' | 'down';
+}
+
+export interface PPTAddAnimationArgs {
+  filename: string;
+  slideNumber: number;
+  objectId?: string;
+  animation: PPTAnimation;
+  outputPath?: string;
+}
+
+export interface PPTAnimation {
+  type: 'entrance' | 'emphasis' | 'exit' | 'motion';
+  effect: 'appear' | 'fade' | 'fly' | 'float' | 'split' | 'wipe' | 'shape' | 'wheel' | 'randomBars' | 'grow' | 'zoom' | 'swivel' | 'bounce';
+  duration?: number;
+  delay?: number;
+  direction?: 'left' | 'right' | 'up' | 'down';
+}
+
+export interface PPTAddNotesArgs {
+  filename: string;
+  slideNumber: number;
+  notes: string;
+  outputPath?: string;
+}
+
+export interface PPTDuplicateSlideArgs {
+  filename: string;
+  slideNumber: number;
+  position?: number;
+  outputPath?: string;
+}
+
+export interface PPTReorderSlidesArgs {
+  filename: string;
+  slideOrder: number[];
+  outputPath?: string;
+}
+
+export interface PPTExportPDFArgs {
+  filename: string;
+  outputPath?: string;
+}
+
+export interface PPTAddMediaArgs {
+  filename: string;
+  slideNumber: number;
+  mediaPath: string;
+  mediaType: 'video' | 'audio';
+  position?: { x: number; y: number };
+  size?: { width: number; height: number };
+  outputPath?: string;
+}
+
+// ============================================================================
+// Outlook Tool Arguments
+// ============================================================================
+
+export interface OutlookSendEmailArgs {
+  to: string | string[];
+  subject: string;
+  body: string;
+  cc?: string | string[];
+  bcc?: string | string[];
+  attachments?: OutlookAttachment[];
+  html?: boolean;
+  priority?: 'high' | 'normal' | 'low';
+  smtpConfig?: OutlookSMTPConfig;
+}
+
+export interface OutlookAttachment {
+  filename: string;
+  path?: string;
+  content?: string | Buffer;
+}
+
+export interface OutlookSMTPConfig {
+  host: string;
+  port: number;
+  secure?: boolean;
+  auth?: {
+    user: string;
+    pass: string;
+  };
+}
+
+export interface OutlookCreateMeetingArgs {
+  subject: string;
+  startTime: string;
+  endTime: string;
+  location?: string;
+  attendees?: OutlookAttendee[];
+  description?: string;
+  reminder?: number;
+  outputPath?: string;
+}
+
+export interface OutlookAttendee {
+  email: string;
+  name?: string;
+  required?: boolean;
+}
+
+export interface OutlookAddContactArgs {
+  firstName: string;
+  lastName: string;
+  email?: string;
+  phone?: string;
+  company?: string;
+  jobTitle?: string;
+  address?: string;
+  outputPath?: string;
+}
+
+export interface OutlookCreateTaskArgs {
+  subject: string;
+  dueDate?: string;
+  priority?: 'high' | 'normal' | 'low';
+  status?: 'notStarted' | 'inProgress' | 'completed' | 'waiting' | 'deferred';
+  category?: string;
+  reminder?: string;
+  notes?: string;
+  outputPath?: string;
+}
+
+export interface OutlookSetRuleArgs {
+  name: string;
+  conditions: OutlookRuleCondition[];
+  actions: OutlookRuleAction[];
+  outputPath?: string;
+}
+
+export interface OutlookRuleCondition {
+  type: 'from' | 'subject' | 'body' | 'recipient' | 'attachment';
+  value: string;
+  operator?: 'contains' | 'equals' | 'startsWith' | 'endsWith';
+}
+
+export interface OutlookRuleAction {
+  type: 'move' | 'copy' | 'delete' | 'forward' | 'flag' | 'category';
+  value: string;
+}

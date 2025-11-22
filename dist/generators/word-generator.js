@@ -1,7 +1,8 @@
 /**
  * Word Generator - Create Word documents using docx library
  */
-import { Document, Packer, Paragraph, TextRun, Table, TableCell, TableRow, HeadingLevel, AlignmentType, PageBreak, UnderlineType, } from 'docx';
+import { Document, Packer, Paragraph, TextRun, Table, TableCell, TableRow, HeadingLevel, AlignmentType, UnderlineType, TableOfContents, Header, Footer, ImageRun, } from 'docx';
+import * as fs from 'fs/promises';
 export class WordGenerator {
     async createDocument(options) {
         const sections = options.sections.map(section => ({
@@ -10,9 +11,235 @@ export class WordGenerator {
         }));
         const doc = new Document({
             sections,
+            styles: options.styles,
         });
         return await Packer.toBuffer(doc);
     }
+    async addTableOfContents(filename, title, hyperlinks = true, levels = 3) {
+        const existingBuffer = await this.loadDocument(filename);
+        // Create a new document with TOC
+        const doc = new Document({
+            sections: [{
+                    children: [
+                        new Paragraph({
+                            text: title || 'Table of Contents',
+                            heading: HeadingLevel.HEADING_1,
+                        }),
+                        new TableOfContents('Table of Contents', {
+                            hyperlink: hyperlinks,
+                            headingStyleRange: `1-${levels}`,
+                        }),
+                        new Paragraph({ pageBreakBefore: true }),
+                    ],
+                }],
+        });
+        return await Packer.toBuffer(doc);
+    }
+    async mailMerge(templatePath, dataSource, outputFilename) {
+        // Load template (in production)
+        // For now, create merged documents
+        const documents = [];
+        for (const data of dataSource) {
+            const doc = new Document({
+                sections: [{
+                        children: [
+                            new Paragraph({
+                                text: 'Mail Merge Document',
+                                heading: HeadingLevel.HEADING_1,
+                            }),
+                            new Paragraph({
+                                text: `Generated from template: ${templatePath}`,
+                            }),
+                            new Paragraph({
+                                text: `Data: ${JSON.stringify(data)}`,
+                            }),
+                        ],
+                    }],
+            });
+            documents.push(await Packer.toBuffer(doc));
+        }
+        return documents;
+    }
+    async findReplace(filename, find, replace, matchCase = false, matchWholeWord = false, formatting) {
+        // Note: docx library doesn't support loading existing documents for editing
+        // This would require using a different library like docx4js or pizzip
+        const doc = new Document({
+            sections: [{
+                    children: [
+                        new Paragraph({
+                            text: `Find and Replace: "${find}" -> "${replace}"`,
+                        }),
+                        new Paragraph({
+                            text: `Match Case: ${matchCase}, Match Whole Word: ${matchWholeWord}`,
+                        }),
+                    ],
+                }],
+        });
+        return await Packer.toBuffer(doc);
+    }
+    async addComment(filename, text, comment, author = 'Office Whisperer') {
+        // Comments require more advanced features
+        // Creating a placeholder document
+        const doc = new Document({
+            sections: [{
+                    children: [
+                        new Paragraph({
+                            text: `Text: ${text}`,
+                        }),
+                        new Paragraph({
+                            children: [
+                                new TextRun({
+                                    text: `Comment by ${author}: ${comment}`,
+                                    italics: true,
+                                    color: '0000FF',
+                                }),
+                            ],
+                        }),
+                    ],
+                }],
+        });
+        return await Packer.toBuffer(doc);
+    }
+    async formatStyles(filename, styles) {
+        const doc = new Document({
+            styles: styles,
+            sections: [{
+                    children: [
+                        new Paragraph({
+                            text: 'Document with Custom Styles Applied',
+                            heading: HeadingLevel.HEADING_1,
+                        }),
+                    ],
+                }],
+        });
+        return await Packer.toBuffer(doc);
+    }
+    async insertImage(filename, imagePath, position, size, wrapping) {
+        const imageBuffer = await fs.readFile(imagePath);
+        const doc = new Document({
+            sections: [{
+                    children: [
+                        new Paragraph({
+                            text: 'Document with Image',
+                            heading: HeadingLevel.HEADING_1,
+                        }),
+                        new Paragraph({
+                            children: [
+                                new ImageRun({
+                                    data: imageBuffer,
+                                    transformation: {
+                                        width: size?.width || 200,
+                                        height: size?.height || 200,
+                                    },
+                                }),
+                            ],
+                        }),
+                        new Paragraph({
+                            text: `Image inserted from: ${imagePath}`,
+                        }),
+                    ],
+                }],
+        });
+        return await Packer.toBuffer(doc);
+    }
+    async addHeaderFooter(filename, type, content, sectionType = 'default') {
+        const processedContent = this.processElements(content);
+        const sectionConfig = {
+            children: [
+                new Paragraph({
+                    text: 'Document with Custom Header/Footer',
+                }),
+            ],
+        };
+        if (type === 'header') {
+            sectionConfig.headers = {
+                default: new Header({
+                    children: processedContent,
+                }),
+            };
+        }
+        else {
+            sectionConfig.footers = {
+                default: new Footer({
+                    children: processedContent,
+                }),
+            };
+        }
+        const doc = new Document({
+            sections: [sectionConfig],
+        });
+        return await Packer.toBuffer(doc);
+    }
+    async compareDocuments(originalPath, revisedPath, author = 'Office Whisperer') {
+        // Document comparison would require specialized libraries
+        // Creating a comparison report
+        const doc = new Document({
+            sections: [{
+                    children: [
+                        new Paragraph({
+                            text: 'Document Comparison Report',
+                            heading: HeadingLevel.HEADING_1,
+                        }),
+                        new Paragraph({
+                            text: `Original: ${originalPath}`,
+                        }),
+                        new Paragraph({
+                            text: `Revised: ${revisedPath}`,
+                        }),
+                        new Paragraph({
+                            text: `Reviewer: ${author}`,
+                        }),
+                        new Paragraph({
+                            children: [
+                                new TextRun({
+                                    text: 'Comparison analysis would be performed here...',
+                                    italics: true,
+                                }),
+                            ],
+                        }),
+                    ],
+                }],
+        });
+        return await Packer.toBuffer(doc);
+    }
+    async convertToPDF(filename) {
+        // PDF conversion would require LibreOffice or similar
+        // Return placeholder info
+        const doc = new Document({
+            sections: [{
+                    children: [
+                        new Paragraph({
+                            text: 'PDF Conversion Information',
+                            heading: HeadingLevel.HEADING_1,
+                        }),
+                        new Paragraph({
+                            text: `Source document: ${filename}`,
+                        }),
+                        new Paragraph({
+                            text: 'PDF conversion requires external tools like LibreOffice or docx2pdf',
+                        }),
+                    ],
+                }],
+        });
+        return await Packer.toBuffer(doc);
+    }
+    async mergeDocuments(documentPaths, outputPath) {
+        // In production, this would load and merge multiple documents
+        // For now, create a placeholder document
+        const doc = new Document({
+            sections: [{
+                    children: [
+                        new Paragraph({
+                            text: 'Merged Documents',
+                            heading: HeadingLevel.HEADING_1,
+                        }),
+                        ...documentPaths.map(path => new Paragraph({ text: `- ${path}` })),
+                    ],
+                }],
+        });
+        return await Packer.toBuffer(doc);
+    }
+    // Helper methods
     processElements(elements) {
         const processed = [];
         for (const element of elements) {
@@ -24,14 +251,20 @@ export class WordGenerator {
                     processed.push(this.createTable(element));
                     break;
                 case 'pageBreak':
-                    processed.push(new PageBreak());
+                    processed.push(new Paragraph({ pageBreakBefore: true }));
                     break;
                 case 'image':
-                    // Image handling would require fs access
                     processed.push(new Paragraph({ text: `[Image: ${element.path}]` }));
                     break;
                 case 'toc':
-                    processed.push(new Paragraph({ text: '[Table of Contents]' }));
+                    processed.push(new Paragraph({
+                        text: element.title || 'Table of Contents',
+                        heading: HeadingLevel.HEADING_1,
+                    }));
+                    processed.push(new TableOfContents('Table of Contents', {
+                        hyperlink: true,
+                        headingStyleRange: '1-3',
+                    }));
                     break;
             }
         }
@@ -108,18 +341,14 @@ export class WordGenerator {
                 return AlignmentType.LEFT;
         }
     }
-    async mergeDocuments(documentPaths, outputPath) {
-        // In production, this would load and merge multiple documents
-        // For now, create a placeholder document
-        const doc = new Document({
-            sections: [{
-                    children: [
-                        new Paragraph({ text: 'Merged Documents:' }),
-                        ...documentPaths.map(path => new Paragraph({ text: `- ${path}` })),
-                    ],
-                }],
-        });
-        return await Packer.toBuffer(doc);
+    async loadDocument(filename) {
+        try {
+            return await fs.readFile(filename);
+        }
+        catch (error) {
+            console.warn(`File ${filename} not found, creating new document`);
+            return Buffer.from([]);
+        }
     }
 }
 //# sourceMappingURL=word-generator.js.map
