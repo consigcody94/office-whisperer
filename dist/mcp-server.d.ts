@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Office Whisperer - MCP Server
- * 38+ Professional Tools for Microsoft Office Suite Automation
+ * Office Whisperer - MCP Server v3.0
+ * 63 Professional Tools for Microsoft Office Suite Automation
  * Control Excel, Word, PowerPoint, and Outlook through natural language with Claude Desktop
  */
 export {};

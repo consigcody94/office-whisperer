@@ -828,3 +828,330 @@ export interface OutlookRuleAction {
   type: 'move' | 'copy' | 'delete' | 'forward' | 'flag' | 'category';
   value: string;
 }
+
+// ============================================================================
+// Excel v3.0 Tool Arguments - Phase 1 Quick Wins
+// ============================================================================
+
+export interface ExcelAddSparklinesArgs {
+  filename: string;
+  sheetName: string;
+  dataRange: string;
+  location: string;
+  type: 'line' | 'column' | 'winLoss';
+  options?: {
+    lineWeight?: number;
+    markers?: boolean;
+    high?: boolean;
+    low?: boolean;
+    first?: boolean;
+    last?: boolean;
+    negative?: boolean;
+    displayEmptyCellsAs?: 'gaps' | 'zero' | 'connect';
+  };
+  outputPath?: string;
+}
+
+export interface ExcelArrayFormulasArgs {
+  filename: string;
+  sheetName: string;
+  formulas: Array<{
+    cell: string;
+    formula: string; // e.g., "=UNIQUE(A2:A100)", "=SORT(B2:B100)", "=FILTER(A2:C100,B2:B100>50)"
+  }>;
+  outputPath?: string;
+}
+
+export interface ExcelAddSubtotalsArgs {
+  filename: string;
+  sheetName: string;
+  range: string;
+  groupBy: number; // Column index to group by
+  summaryFunction: 'SUM' | 'COUNT' | 'AVERAGE' | 'MAX' | 'MIN';
+  summaryColumns: number[]; // Columns to apply function to
+  replaceExisting?: boolean;
+  pageBreakBetweenGroups?: boolean;
+  summaryBelowData?: boolean;
+  outputPath?: string;
+}
+
+export interface ExcelAddHyperlinksArgs {
+  filename: string;
+  sheetName: string;
+  links: Array<{
+    cell: string;
+    url?: string; // External URL
+    sheet?: string; // Link to another sheet
+    range?: string; // Link to specific range
+    tooltip?: string;
+    displayText?: string;
+  }>;
+  outputPath?: string;
+}
+
+export interface ExcelAdvancedChartsArgs {
+  filename: string;
+  sheetName: string;
+  chart: {
+    type: 'waterfall' | 'funnel' | 'treemap' | 'sunburst' | 'histogram' | 'boxWhisker' | 'pareto';
+    title: string;
+    dataRange: string;
+    categories?: string;
+    values?: string;
+    position?: { row: number; col: number };
+  };
+  outputPath?: string;
+}
+
+export interface ExcelAddSlicersArgs {
+  filename: string;
+  sheetName: string;
+  tableName: string; // Table or PivotTable name
+  slicers: Array<{
+    columnName: string;
+    caption?: string;
+    position?: { row: number; col: number };
+    style?: string;
+  }>;
+  outputPath?: string;
+}
+
+// ============================================================================
+// Word v3.0 Tool Arguments - Phase 1 Quick Wins
+// ============================================================================
+
+export interface WordTrackChangesArgs {
+  filename: string;
+  enable: boolean;
+  author?: string;
+  showMarkup?: boolean;
+  trackFormatting?: boolean;
+  trackMoves?: boolean;
+  outputPath?: string;
+}
+
+export interface WordAddFootnotesArgs {
+  filename: string;
+  footnotes: Array<{
+    text: string; // Text to attach footnote to
+    note: string; // Footnote content
+    type?: 'footnote' | 'endnote';
+  }>;
+  outputPath?: string;
+}
+
+export interface WordAddBookmarksArgs {
+  filename: string;
+  bookmarks: Array<{
+    name: string;
+    text: string; // Text to bookmark
+  }>;
+  outputPath?: string;
+}
+
+export interface WordAddSectionBreaksArgs {
+  filename: string;
+  breaks: Array<{
+    position: number; // After which paragraph
+    type: 'nextPage' | 'continuous' | 'evenPage' | 'oddPage';
+  }>;
+  outputPath?: string;
+}
+
+export interface WordAddTextBoxesArgs {
+  filename: string;
+  textBoxes: Array<{
+    text: string;
+    position?: { x: number; y: number };
+    width?: number;
+    height?: number;
+    wrapping?: 'inline' | 'square' | 'tight' | 'through' | 'topAndBottom';
+    border?: boolean;
+    fill?: string;
+  }>;
+  outputPath?: string;
+}
+
+export interface WordAddCrossReferencesArgs {
+  filename: string;
+  references: Array<{
+    bookmarkName: string;
+    referenceType: 'pageNumber' | 'text' | 'above/below';
+    insertText?: string; // Text before reference like "See page "
+  }>;
+  outputPath?: string;
+}
+
+// ============================================================================
+// PowerPoint v3.0 Tool Arguments - Phase 1 Quick Wins
+// ============================================================================
+
+export interface PPTMasterSlidesArgs {
+  filename: string;
+  masterSlide: {
+    name: string;
+    background?: {
+      color?: string;
+      image?: string;
+    };
+    placeholders?: Array<{
+      type: 'title' | 'body' | 'footer' | 'slideNumber' | 'date';
+      x: number;
+      y: number;
+      w: number;
+      h: number;
+    }>;
+    fonts?: {
+      title?: string;
+      body?: string;
+    };
+    colors?: {
+      accent1?: string;
+      accent2?: string;
+      accent3?: string;
+    };
+  };
+  outputPath?: string;
+}
+
+export interface PPTAddHyperlinksArgs {
+  filename: string;
+  slideNumber: number;
+  links: Array<{
+    text: string; // Text to hyperlink
+    url?: string; // External URL
+    slide?: number; // Link to slide number
+    tooltip?: string;
+  }>;
+  outputPath?: string;
+}
+
+export interface PPTAddSectionsArgs {
+  filename: string;
+  sections: Array<{
+    name: string;
+    startSlide: number;
+  }>;
+  outputPath?: string;
+}
+
+export interface PPTMorphTransitionArgs {
+  filename: string;
+  fromSlide: number;
+  toSlide: number;
+  duration?: number;
+  outputPath?: string;
+}
+
+export interface PPTAddActionButtonsArgs {
+  filename: string;
+  slideNumber: number;
+  buttons: Array<{
+    text: string;
+    action: 'nextSlide' | 'previousSlide' | 'firstSlide' | 'lastSlide' | 'endShow' | 'customSlide';
+    targetSlide?: number;
+    x: number;
+    y: number;
+    w?: number;
+    h?: number;
+  }>;
+  outputPath?: string;
+}
+
+// ============================================================================
+// Outlook v3.0 Tool Arguments - Phase 1 Quick Wins
+// ============================================================================
+
+export interface OutlookReadEmailsArgs {
+  folder?: string; // Default: "INBOX"
+  limit?: number; // Number of emails to retrieve
+  unreadOnly?: boolean;
+  since?: string; // ISO date string
+  imapConfig?: {
+    host: string;
+    port: number;
+    user: string;
+    password: string;
+    tls?: boolean;
+  };
+}
+
+export interface OutlookSearchEmailsArgs {
+  query: string;
+  searchIn?: ('subject' | 'from' | 'body' | 'to')[];
+  folder?: string;
+  limit?: number;
+  since?: string;
+  imapConfig?: {
+    host: string;
+    port: number;
+    user: string;
+    password: string;
+    tls?: boolean;
+  };
+}
+
+export interface OutlookRecurringMeetingArgs {
+  subject: string;
+  startTime: string;
+  endTime: string;
+  recurrence: {
+    frequency: 'daily' | 'weekly' | 'monthly' | 'yearly';
+    interval?: number; // Every N days/weeks/months/years
+    daysOfWeek?: ('MO' | 'TU' | 'WE' | 'TH' | 'FR' | 'SA' | 'SU')[];
+    until?: string; // End date
+    count?: number; // Number of occurrences
+  };
+  location?: string;
+  attendees?: OutlookAttendee[];
+  description?: string;
+  outputPath?: string;
+}
+
+export interface OutlookEmailTemplateArgs {
+  name: string;
+  subject: string;
+  body: string;
+  html?: boolean;
+  placeholders?: string[]; // Variables like {{name}}, {{company}}
+  outputPath?: string;
+}
+
+export interface OutlookMarkReadArgs {
+  messageIds: string[];
+  markAsRead: boolean; // true = read, false = unread
+  imapConfig?: {
+    host: string;
+    port: number;
+    user: string;
+    password: string;
+    tls?: boolean;
+  };
+}
+
+export interface OutlookArchiveEmailArgs {
+  messageIds: string[];
+  archiveFolder?: string; // Default: "Archive"
+  imapConfig?: {
+    host: string;
+    port: number;
+    user: string;
+    password: string;
+    tls?: boolean;
+  };
+}
+
+export interface OutlookCalendarViewArgs {
+  startDate: string;
+  endDate: string;
+  viewType: 'day' | 'week' | 'month' | 'agenda';
+  outputFormat?: 'ics' | 'json';
+  outputPath?: string;
+}
+
+export interface OutlookSearchContactsArgs {
+  query: string;
+  searchIn?: ('name' | 'email' | 'company' | 'phone')[];
+  outputFormat?: 'vcf' | 'json';
+  outputPath?: string;
+}

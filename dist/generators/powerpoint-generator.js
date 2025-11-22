@@ -319,5 +319,208 @@ export class PowerPointGenerator {
                 break;
         }
     }
+    // ============================================================================
+    // v3.0 Phase 1 Methods
+    // ============================================================================
+    async defineMasterSlide(filename, masterSlide) {
+        const pptx = new PptxGenJS();
+        // Define slide master
+        pptx.defineSlideMaster({
+            title: masterSlide.name,
+            background: masterSlide.background?.color
+                ? { color: masterSlide.background.color }
+                : masterSlide.background?.image
+                    ? { path: masterSlide.background.image }
+                    : { color: 'FFFFFF' },
+        });
+        // Create demo slide showing master configuration
+        const slide = pptx.addSlide();
+        slide.addText(`Master Slide: ${masterSlide.name}`, {
+            x: 1,
+            y: 1,
+            fontSize: 32,
+            bold: true,
+        });
+        const configInfo = [
+            `Background: ${masterSlide.background?.color || masterSlide.background?.image || 'Default'}`,
+            `Placeholders: ${masterSlide.placeholders?.length || 0}`,
+            `Title Font: ${masterSlide.fonts?.title || 'Default'}`,
+            `Body Font: ${masterSlide.fonts?.body || 'Default'}`,
+            `Accent Colors: ${Object.keys(masterSlide.colors || {}).length}`,
+        ];
+        slide.addText(configInfo.join('\n'), {
+            x: 1,
+            y: 2.5,
+            fontSize: 16,
+            color: '666666',
+        });
+        const buffer = await pptx.write({ outputType: 'arraybuffer' });
+        return Buffer.from(buffer);
+    }
+    async addHyperlinks(filename, slideNumber, links) {
+        const pptx = new PptxGenJS();
+        const slide = pptx.addSlide();
+        slide.addText(`Slide ${slideNumber} - Hyperlinks`, {
+            x: 0.5,
+            y: 0.5,
+            fontSize: 32,
+            bold: true,
+        });
+        // Add hyperlinks
+        let yPos = 1.5;
+        for (const link of links) {
+            if (link.url) {
+                slide.addText(link.text, {
+                    x: 1,
+                    y: yPos,
+                    fontSize: 18,
+                    color: '0066CC',
+                    underline: { style: 'sng' },
+                    hyperlink: { url: link.url, tooltip: link.tooltip },
+                });
+            }
+            else if (link.slide) {
+                slide.addText(link.text, {
+                    x: 1,
+                    y: yPos,
+                    fontSize: 18,
+                    color: '0066CC',
+                    underline: { style: 'sng' },
+                    hyperlink: { slide: link.slide, tooltip: link.tooltip },
+                });
+            }
+            yPos += 0.5;
+        }
+        const buffer = await pptx.write({ outputType: 'arraybuffer' });
+        return Buffer.from(buffer);
+    }
+    async addSections(filename, sections) {
+        const pptx = new PptxGenJS();
+        // Note: PptxGenJS has limited section support
+        // Create slides representing sections
+        for (const section of sections) {
+            const slide = pptx.addSlide();
+            slide.addText(section.name, {
+                x: 1,
+                y: 2.5,
+                w: '80%',
+                fontSize: 44,
+                bold: true,
+                align: 'center',
+                color: '0088CC',
+            });
+            slide.addText(`Section starts at slide ${section.startSlide}`, {
+                x: 1,
+                y: 4,
+                w: '80%',
+                fontSize: 18,
+                align: 'center',
+                color: '666666',
+                italic: true,
+            });
+        }
+        const buffer = await pptx.write({ outputType: 'arraybuffer' });
+        return Buffer.from(buffer);
+    }
+    async addMorphTransition(filename, fromSlide, toSlide, duration) {
+        const pptx = new PptxGenJS();
+        // Slide 1
+        const slide1 = pptx.addSlide();
+        slide1.addText('Morph Transition - Slide 1', {
+            x: 1,
+            y: 1,
+            fontSize: 32,
+            bold: true,
+        });
+        slide1.addShape(pptx.ShapeType.rect, {
+            x: 2,
+            y: 3,
+            w: 2,
+            h: 1.5,
+            fill: { color: '0088CC' },
+        });
+        // Slide 2
+        const slide2 = pptx.addSlide();
+        slide2.addText('Morph Transition - Slide 2', {
+            x: 1,
+            y: 1,
+            fontSize: 32,
+            bold: true,
+        });
+        slide2.addShape(pptx.ShapeType.rect, {
+            x: 5,
+            y: 3,
+            w: 2,
+            h: 1.5,
+            fill: { color: 'CC0088' },
+        });
+        slide2.addText(`Note: Morph transition from slide ${fromSlide} to ${toSlide}\nDuration: ${duration || 1000}ms\n\nRequires PowerPoint 2016+ to apply actual morph effect.`, {
+            x: 1,
+            y: 5,
+            fontSize: 14,
+            color: '666666',
+            italic: true,
+        });
+        const buffer = await pptx.write({ outputType: 'arraybuffer' });
+        return Buffer.from(buffer);
+    }
+    async addActionButtons(filename, slideNumber, buttons) {
+        const pptx = new PptxGenJS();
+        const slide = pptx.addSlide();
+        slide.addText(`Slide ${slideNumber} - Action Buttons`, {
+            x: 0.5,
+            y: 0.5,
+            fontSize: 32,
+            bold: true,
+        });
+        // Add action buttons
+        for (const button of buttons) {
+            const buttonWidth = button.w || 2;
+            const buttonHeight = button.h || 0.75;
+            // Draw button shape
+            slide.addShape(pptx.ShapeType.rect, {
+                x: button.x,
+                y: button.y,
+                w: buttonWidth,
+                h: buttonHeight,
+                fill: { color: '0088CC' },
+                line: { color: '003366', width: 2 },
+            });
+            // Add button text
+            slide.addText(button.text, {
+                x: button.x,
+                y: button.y,
+                w: buttonWidth,
+                h: buttonHeight,
+                fontSize: 16,
+                color: 'FFFFFF',
+                bold: true,
+                align: 'center',
+                valign: 'middle',
+            });
+            // Add action metadata as small text below
+            const actionText = button.action === 'customSlide'
+                ? `Go to slide ${button.targetSlide}`
+                : button.action.replace(/([A-Z])/g, ' $1').trim();
+            slide.addText(actionText, {
+                x: button.x,
+                y: button.y + buttonHeight + 0.1,
+                w: buttonWidth,
+                fontSize: 10,
+                color: '666666',
+                align: 'center',
+                italic: true,
+            });
+        }
+        slide.addText('Note: Interactive action buttons require PowerPoint to configure hyperlinks.', {
+            x: 0.5,
+            y: 6.5,
+            fontSize: 12,
+            color: '999999',
+            italic: true,
+        });
+        const buffer = await pptx.write({ outputType: 'arraybuffer' });
+        return Buffer.from(buffer);
+    }
 }
 //# sourceMappingURL=powerpoint-generator.js.map

@@ -25,5 +25,37 @@ export declare class ExcelGenerator {
     private applyRowStyle;
     private normalizeColor;
     private columnToNumber;
+    addSparklines(filename: string, sheetName: string, dataRange: string, location: string, type: 'line' | 'column' | 'winLoss', options?: any): Promise<Buffer>;
+    addArrayFormulas(filename: string, sheetName: string, formulas: Array<{
+        cell: string;
+        formula: string;
+    }>): Promise<Buffer>;
+    addSubtotals(filename: string, sheetName: string, range: string, groupBy: number, summaryFunction: 'SUM' | 'COUNT' | 'AVERAGE' | 'MAX' | 'MIN', summaryColumns: number[]): Promise<Buffer>;
+    addHyperlinks(filename: string, sheetName: string, links: Array<{
+        cell: string;
+        url?: string;
+        sheet?: string;
+        range?: string;
+        tooltip?: string;
+        displayText?: string;
+    }>): Promise<Buffer>;
+    addAdvancedChart(filename: string, sheetName: string, chart: {
+        type: 'waterfall' | 'funnel' | 'treemap' | 'sunburst' | 'histogram' | 'boxWhisker' | 'pareto';
+        title: string;
+        dataRange: string;
+        position?: {
+            row: number;
+            col: number;
+        };
+    }): Promise<Buffer>;
+    addSlicers(filename: string, sheetName: string, tableName: string, slicers: Array<{
+        columnName: string;
+        caption?: string;
+        position?: {
+            row: number;
+            col: number;
+        };
+    }>): Promise<Buffer>;
+    private numberToColumn;
 }
 //# sourceMappingURL=excel-generator.d.ts.map

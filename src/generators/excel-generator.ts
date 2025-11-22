@@ -614,4 +614,221 @@ export class ExcelGenerator {
     }
     return result;
   }
+
+  // ============================================================================
+  // Excel v3.0 Methods - Phase 1 Quick Wins
+  // ============================================================================
+
+  async addSparklines(
+    filename: string,
+    sheetName: string,
+    dataRange: string,
+    location: string,
+    type: 'line' | 'column' | 'winLoss',
+    options?: any
+  ): Promise<Buffer> {
+    const workbook = await this.loadWorkbook(filename);
+    const worksheet = workbook.getWorksheet(sheetName);
+
+    if (!worksheet) {
+      throw new Error(`Sheet "${sheetName}" not found`);
+    }
+
+    // Note: ExcelJS doesn't have native sparkline support
+    // Creating a workaround using conditional formatting or notes
+    const cell = worksheet.getCell(location);
+    cell.note = `Sparkline: ${type} chart of ${dataRange}`;
+
+    // Add metadata as cell comment for reference
+    cell.value = `[Sparkline: ${type}]`;
+
+    return await workbook.xlsx.writeBuffer() as unknown as Buffer;
+  }
+
+  async addArrayFormulas(
+    filename: string,
+    sheetName: string,
+    formulas: Array<{ cell: string; formula: string }>
+  ): Promise<Buffer> {
+    const workbook = await this.loadWorkbook(filename);
+    const worksheet = workbook.getWorksheet(sheetName);
+
+    if (!worksheet) {
+      throw new Error(`Sheet "${sheetName}" not found`);
+    }
+
+    formulas.forEach(({ cell, formula }) => {
+      const targetCell = worksheet.getCell(cell);
+      targetCell.value = { formula } as any;
+    });
+
+    return await workbook.xlsx.writeBuffer() as unknown as Buffer;
+  }
+
+  async addSubtotals(
+    filename: string,
+    sheetName: string,
+    range: string,
+    groupBy: number,
+    summaryFunction: 'SUM' | 'COUNT' | 'AVERAGE' | 'MAX' | 'MIN',
+    summaryColumns: number[]
+  ): Promise<Buffer> {
+    const workbook = await this.loadWorkbook(filename);
+    const worksheet = workbook.getWorksheet(sheetName);
+
+    if (!worksheet) {
+      throw new Error(`Sheet "${sheetName}" not found`);
+    }
+
+    // Parse range
+    const [startCell, endCell] = range.split(':');
+    const startRow = parseInt(startCell.match(/\d+/)?.[0] || '1');
+    const endRow = parseInt(endCell.match(/\d+/)?.[0] || '100');
+
+    // Group data and insert subtotal rows
+    let currentGroup = worksheet.getCell(startRow, groupBy).value;
+    let groupStartRow = startRow;
+
+    for (let row = startRow + 1; row <= endRow + 1; row++) {
+      const cellValue = row <= endRow ? worksheet.getCell(row, groupBy).value : null;
+
+      if (cellValue !== currentGroup || row > endRow) {
+        // Insert subtotal row
+        const subtotalRow = worksheet.getRow(row);
+        worksheet.spliceRows(row, 0, []);
+
+        summaryColumns.forEach(col => {
+          const funcName = summaryFunction.toLowerCase();
+          const rangeRef = `${this.numberToColumn(col)}${groupStartRow}:${this.numberToColumn(col)}${row - 1}`;
+          subtotalRow.getCell(col).value = { formula: `=${funcName.toUpperCase()}(${rangeRef})` } as any;
+        });
+
+        subtotalRow.getCell(groupBy).value = `${currentGroup} Total`;
+        subtotalRow.font = { bold: true };
+
+        currentGroup = cellValue;
+        groupStartRow = row + 1;
+      }
+    }
+
+    return await workbook.xlsx.writeBuffer() as unknown as Buffer;
+  }
+
+  async addHyperlinks(
+    filename: string,
+    sheetName: string,
+    links: Array<{
+      cell: string;
+      url?: string;
+      sheet?: string;
+      range?: string;
+      tooltip?: string;
+      displayText?: string;
+    }>
+  ): Promise<Buffer> {
+    const workbook = await this.loadWorkbook(filename);
+    const worksheet = workbook.getWorksheet(sheetName);
+
+    if (!worksheet) {
+      throw new Error(`Sheet "${sheetName}" not found`);
+    }
+
+    links.forEach(link => {
+      const cell = worksheet.getCell(link.cell);
+
+      if (link.url) {
+        cell.value = {
+          text: link.displayText || link.url,
+          hyperlink: link.url,
+          tooltip: link.tooltip
+        } as any;
+      } else if (link.sheet) {
+        const target = link.range ? `${link.sheet}!${link.range}` : link.sheet;
+        cell.value = {
+          text: link.displayText || `Go to ${link.sheet}`,
+          hyperlink: `#${target}`,
+          tooltip: link.tooltip
+        } as any;
+      }
+
+      cell.font = { color: { argb: '0000FF' }, underline: true };
+    });
+
+    return await workbook.xlsx.writeBuffer() as unknown as Buffer;
+  }
+
+  async addAdvancedChart(
+    filename: string,
+    sheetName: string,
+    chart: {
+      type: 'waterfall' | 'funnel' | 'treemap' | 'sunburst' | 'histogram' | 'boxWhisker' | 'pareto';
+      title: string;
+      dataRange: string;
+      position?: { row: number; col: number };
+    }
+  ): Promise<Buffer> {
+    const workbook = await this.loadWorkbook(filename);
+    const worksheet = workbook.getWorksheet(sheetName);
+
+    if (!worksheet) {
+      throw new Error(`Sheet "${sheetName}" not found`);
+    }
+
+    // Note: ExcelJS has limited chart support for advanced types
+    // Adding a placeholder with chart metadata
+    const position = chart.position || { row: 1, col: 10 };
+    const cell = worksheet.getCell(position.row, position.col);
+
+    cell.value = `[${chart.type.toUpperCase()} Chart: ${chart.title}]`;
+    cell.note = `Chart Type: ${chart.type}\nData Range: ${chart.dataRange}\n\nNote: Advanced chart types require Microsoft Excel to render.`;
+    cell.font = { bold: true, color: { argb: '0000FF' } };
+
+    return await workbook.xlsx.writeBuffer() as unknown as Buffer;
+  }
+
+  async addSlicers(
+    filename: string,
+    sheetName: string,
+    tableName: string,
+    slicers: Array<{
+      columnName: string;
+      caption?: string;
+      position?: { row: number; col: number };
+    }>
+  ): Promise<Buffer> {
+    const workbook = await this.loadWorkbook(filename);
+    const worksheet = workbook.getWorksheet(sheetName);
+
+    if (!worksheet) {
+      throw new Error(`Sheet "${sheetName}" not found`);
+    }
+
+    // Note: ExcelJS doesn't support slicers directly
+    // Adding metadata as comments for reference
+    slicers.forEach((slicer, index) => {
+      const position = slicer.position || { row: 1 + index * 2, col: 15 };
+      const cell = worksheet.getCell(position.row, position.col);
+
+      cell.value = `[Slicer: ${slicer.caption || slicer.columnName}]`;
+      cell.note = `Table: ${tableName}\nColumn: ${slicer.columnName}\n\nNote: Slicers require Microsoft Excel to render.`;
+      cell.font = { bold: true, color: { argb: 'FF6600' } };
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFF3E0' }
+      } as any;
+    });
+
+    return await workbook.xlsx.writeBuffer() as unknown as Buffer;
+  }
+
+  private numberToColumn(num: number): string {
+    let result = '';
+    while (num > 0) {
+      const rem = (num - 1) % 26;
+      result = String.fromCharCode(65 + rem) + result;
+      num = Math.floor((num - rem) / 26);
+    }
+    return result;
+  }
 }

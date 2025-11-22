@@ -25,5 +25,33 @@ export declare class WordGenerator {
     private createTable;
     private getAlignment;
     private loadDocument;
+    enableTrackChanges(filename: string, enable: boolean, author?: string): Promise<Buffer>;
+    addFootnotes(filename: string, footnotes: Array<{
+        text: string;
+        note: string;
+        type?: 'footnote' | 'endnote';
+    }>): Promise<Buffer>;
+    addBookmarks(filename: string, bookmarks: Array<{
+        name: string;
+        text: string;
+    }>): Promise<Buffer>;
+    addSectionBreaks(filename: string, breaks: Array<{
+        position: number;
+        type: 'nextPage' | 'continuous' | 'evenPage' | 'oddPage';
+    }>): Promise<Buffer>;
+    addTextBoxes(filename: string, textBoxes: Array<{
+        text: string;
+        position?: {
+            x: number;
+            y: number;
+        };
+        width?: number;
+        height?: number;
+    }>): Promise<Buffer>;
+    addCrossReferences(filename: string, references: Array<{
+        bookmarkName: string;
+        referenceType: 'pageNumber' | 'text' | 'above/below';
+        insertText?: string;
+    }>): Promise<Buffer>;
 }
 //# sourceMappingURL=word-generator.d.ts.map
